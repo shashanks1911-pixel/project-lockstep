@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Lion King · Live Activity — Headout Concept</title>
+<style>
+  :root{
+    --ho-purple:#8000FF;
+    --ho-purple-deep:#4C00A0;
+    --ho-violet:#9A3DFF;
+    --ho-light:#C9A6FF;
+    --amber:#FFB23E;
+    --sun:#FFE3A0;
+    --ink:#0A0710;
+    --panel:#120D1E;
+    --glass:rgba(15,10,26,0.62);
+    --glass-2:rgba(28,20,46,0.55);
+    --stroke:rgba(255,255,255,0.12);
+    --stroke-soft:rgba(255,255,255,0.07);
+    --text:#FFFFFF;
+    --dim:rgba(255,255,255,0.64);
+    --dimmer:rgba(255,255,255,0.40);
+    --chip:rgba(255,255,255,0.10);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--ink);color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;border-radius:50%;filter:blur(130px);}
+  .bg-glow::before{width:620px;height:620px;background:radial-gradient(circle,#8000FF,transparent 60%);top:-180px;left:-120px;opacity:.42;}
+  .bg-glow::after{width:560px;height:560px;background:radial-gradient(circle,#FF8A3D,transparent 62%);bottom:-220px;right:-140px;opacity:.22;}
+
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:54px 24px 90px;}
+
+  header{margin-bottom:46px;max-width:780px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ho-light);padding:6px 12px;border:1px solid var(--stroke);border-radius:999px;background:rgba(128,0,255,0.10);}
+  .brandmark{font-weight:800;letter-spacing:-0.02em;}
+  h1{font-size:clamp(30px,4.6vw,50px);line-height:1.04;font-weight:800;letter-spacing:-0.03em;margin:18px 0 14px;}
+  h1 .accent{background:linear-gradient(100deg,var(--amber),#FFE3A0);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lede{font-size:17px;line-height:1.55;color:var(--dim);max-width:640px;}
+  .lede b{color:#fff;font-weight:600;}
+
+  .sec{margin-top:78px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+  .sec-num{font-size:13px;font-weight:700;color:var(--ho-violet);letter-spacing:0.04em;}
+  .sec h2{font-size:24px;font-weight:700;letter-spacing:-0.02em;margin:0;}
+  .sec p.sub{color:var(--dim);font-size:15px;line-height:1.5;margin:6px 0 30px;max-width:660px;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:30px;}
+  .tab{appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,0.04);color:var(--dim);font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease;display:inline-flex;align-items:center;gap:8px;}
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.5;transition:all .22s;}
+  .tab:hover{color:#fff;border-color:rgba(255,255,255,0.22);}
+  .tab.active{background:var(--ho-purple);border-color:var(--ho-purple);color:#fff;box-shadow:0 8px 26px -8px rgba(128,0,255,.7);}
+  .tab.active .dot{opacity:1;background:#fff;}
+  .play{margin-left:auto;appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,0.04);color:#fff;font-family:inherit;font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+  .play:hover{border-color:rgba(255,255,255,0.26);background:rgba(255,255,255,0.07);}
+
+  .stage{display:grid;grid-template-columns:minmax(280px,330px) 1fr;gap:48px;align-items:center;}
+  @media(max-width:760px){.stage{grid-template-columns:1fr;gap:34px;justify-items:center;}}
+
+  .phone{position:relative;width:330px;height:690px;border-radius:58px;background:#000;padding:11px;box-shadow:0 0 0 2px #2a2a2e,0 40px 80px -28px rgba(0,0,0,.85),0 0 90px -30px rgba(128,0,255,.5);flex-shrink:0;}
+  .screen{position:relative;width:100%;height:100%;border-radius:48px;overflow:hidden;
+    background:
+      radial-gradient(85% 55% at 50% 96%, rgba(255,150,60,.55), transparent 62%),
+      linear-gradient(180deg,#160c2c 0%,#34205c 30%,#6a3a72 56%,#c4733f 84%,#ffb35a 100%);}
+  .skyline{position:absolute;left:0;right:0;bottom:0;height:150px;opacity:.92;}
+  .screen .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,4,16,.30),rgba(8,4,16,.02) 32%,rgba(8,4,16,.30));}
+
+  .island{position:absolute;top:14px;left:50%;transform:translateX(-50%);height:35px;min-width:118px;background:#000;border-radius:22px;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:0 11px 0 9px;gap:10px;overflow:hidden;transition:all .35s cubic-bezier(.4,1.3,.5,1);}
+  .island .il{display:flex;align-items:center;gap:7px;}
+  .island .hglyph{width:19px;height:19px;border-radius:6px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .island .hglyph svg{width:12px;height:12px;}
+  .island .ilab{font-size:11.5px;font-weight:600;color:#fff;white-space:nowrap;}
+  .island .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  .lock-top{position:absolute;top:64px;left:0;right:0;text-align:center;z-index:4;padding:0 24px;}
+  .lock-date{font-size:15px;font-weight:600;color:rgba(255,255,255,.92);letter-spacing:.01em;margin-bottom:-4px;}
+  .lock-time{font-size:74px;font-weight:600;letter-spacing:-0.02em;line-height:1;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.25);font-variant-numeric:tabular-nums;}
+
+  .la-mount{position:absolute;left:14px;right:14px;top:248px;z-index:5;}
+  .la{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%);border:1px solid var(--stroke);border-radius:24px;padding:13px 14px 14px;box-shadow:0 18px 40px -18px rgba(0,0,0,.7);transition:opacity .4s ease, transform .4s ease;}
+  .la.swap{opacity:0;transform:translateY(8px);}
+  .la-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+  .la-brand{display:flex;align-items:center;gap:7px;}
+  .la-brand .hglyph{width:18px;height:18px;border-radius:6px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;}
+  .la-brand .hglyph svg{width:11px;height:11px;}
+  .la-brand .name{font-size:13px;font-weight:800;letter-spacing:-0.01em;}
+  .la-state{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ho-light);}
+
+  .la-body{display:flex;gap:12px;align-items:center;}
+  .thumb{width:54px;height:54px;border-radius:14px;flex-shrink:0;overflow:hidden;background:linear-gradient(155deg,var(--amber),#FF7A3D 52%,#7A2E8A);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);}
+  .thumb svg{width:48px;height:48px;}
+  .la-info{flex:1;min-width:0;}
+  .la-title{font-size:15.5px;font-weight:700;letter-spacing:-0.01em;line-height:1.18;}
+  .la-sub{font-size:12.5px;color:var(--dim);margin-top:2px;line-height:1.3;}
+  .la-trail{text-align:right;flex-shrink:0;padding-left:6px;}
+  .la-trail .big{font-size:19px;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
+  .la-trail .lab{font-size:10px;font-weight:600;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;margin-top:1px;}
+
+  .la-route{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .la-route .line{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.14);position:relative;overflow:hidden;}
+  .la-route .line::after{content:"";position:absolute;left:0;top:0;bottom:0;width:42%;background:linear-gradient(90deg,var(--ho-violet),var(--ho-light));border-radius:4px;}
+  .la-route .pt{width:8px;height:8px;border-radius:50%;background:var(--ho-light);}
+  .la-route .pt.hollow{background:transparent;border:2px solid rgba(255,255,255,.5);}
+
+  /* act progress (interval) */
+  .acts{display:flex;align-items:center;gap:6px;margin-top:12px;}
+  .acts .seg{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .acts .bar{width:100%;height:4px;border-radius:4px;background:rgba(255,255,255,.16);}
+  .acts .bar.done{background:linear-gradient(90deg,var(--ho-violet),var(--ho-light));}
+  .acts .bar.now{background:repeating-linear-gradient(90deg,var(--amber) 0 6px,rgba(255,178,62,.3) 6px 12px);}
+  .acts .lbl{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dimmer);}
+  .acts .lbl.on{color:var(--amber);}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--chip);border:1px solid var(--stroke-soft);padding:5px 9px;border-radius:9px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.92);white-space:nowrap;}
+  .chip .em{font-size:12.5px;line-height:1;}
+  .chip.cta{background:rgba(128,0,255,.22);border-color:rgba(154,61,255,.5);color:#fff;}
+  .chip.warn{background:rgba(255,178,62,.16);border-color:rgba(255,178,62,.4);}
+
+  .la-cta{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--ho-purple);border-radius:11px;padding:9px;font-size:13px;font-weight:700;box-shadow:0 8px 22px -10px rgba(128,0,255,.9);}
+  .la-cta svg{width:14px;height:14px;}
+  .qr{width:42px;height:42px;border-radius:8px;background:#fff;padding:4px;flex-shrink:0;}
+  .qr svg{width:100%;height:100%;}
+  .stars{display:flex;gap:4px;margin-top:5px;}
+  .stars svg{width:18px;height:18px;color:#FFC53D;}
+
+  .lock-bottom{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:space-between;padding:0 40px;z-index:4;}
+  .lb-btn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.32);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;}
+  .lb-btn svg{width:18px;height:18px;color:#fff;}
+
+  .annot{max-width:430px;}
+  .annot .a-eye{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ho-violet);margin-bottom:8px;display:flex;align-items:center;gap:9px;}
+  .annot .a-eye .step{width:24px;height:24px;border-radius:50%;background:rgba(128,0,255,.18);border:1px solid rgba(154,61,255,.5);display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .annot h3{font-size:23px;font-weight:700;letter-spacing:-0.02em;margin:0 0 12px;}
+  .annot p{color:var(--dim);font-size:15px;line-height:1.6;margin:0 0 18px;}
+  .a-meta{display:grid;gap:10px;}
+  .a-row{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  .a-row .k{color:var(--ho-light);font-weight:700;min-width:88px;flex-shrink:0;}
+  .a-row .v{color:var(--dim);}
+
+  .di-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:760px){.di-grid{grid-template-columns:1fr;}}
+  .di-card{border:1px solid var(--stroke-soft);border-radius:20px;overflow:hidden;background:var(--panel);}
+  .di-stage{position:relative;height:160px;background:radial-gradient(110% 80% at 50% 110%, rgba(255,150,60,.4), transparent 60%),linear-gradient(180deg,#1a0f33,#5a3470);display:flex;justify-content:center;padding-top:18px;}
+  .di-cap{padding:14px 16px 16px;}
+  .di-cap .t{font-size:14px;font-weight:700;}
+  .di-cap .d{font-size:12.5px;color:var(--dim);line-height:1.45;margin-top:4px;}
+  .gi{position:relative;background:#000;border-radius:22px;display:flex;align-items:center;height:35px;}
+  .gi.minimal{width:46px;justify-content:center;}
+  .gi.minimal .hglyph{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;}
+  .gi.minimal .hglyph svg{width:12px;height:12px;}
+  .gi.compact{min-width:158px;justify-content:space-between;padding:0 12px 0 9px;gap:12px;}
+  .gi.compact .hglyph{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .gi.compact .hglyph svg{width:12px;height:12px;}
+  .gi.compact .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;}
+  .gi.expanded{width:252px;height:auto;flex-direction:column;align-items:stretch;border-radius:26px;padding:13px;gap:10px;align-self:flex-start;}
+  .gi.expanded .e-top{display:flex;align-items:center;gap:10px;}
+  .gi.expanded .e-thumb{width:42px;height:42px;border-radius:11px;background:linear-gradient(155deg,var(--amber),#FF7A3D 52%,#7A2E8A);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .gi.expanded .e-thumb svg{width:38px;height:38px;}
+  .gi.expanded .e-info{flex:1;min-width:0;}
+  .gi.expanded .e-title{font-size:13.5px;font-weight:700;line-height:1.15;}
+  .gi.expanded .e-sub{font-size:11.5px;color:var(--dim);margin-top:2px;}
+  .gi.expanded .e-trail{text-align:right;}
+  .gi.expanded .e-trail .b{font-size:16px;font-weight:800;color:var(--ho-light);font-variant-numeric:tabular-nums;}
+  .gi.expanded .e-trail .l{font-size:9px;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;}
+  .gi.expanded .e-btn{background:var(--ho-purple);border-radius:10px;padding:8px;text-align:center;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .gi.expanded .e-btn svg{width:13px;height:13px;}
+
+  /* source-data section */
+  .src{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:760px){.src{grid-template-columns:1fr;}}
+  .src-row{display:flex;gap:14px;align-items:flex-start;padding:15px 16px;border:1px solid var(--stroke-soft);border-radius:14px;background:rgba(255,255,255,.025);}
+  .src-row .ic{width:30px;height:30px;border-radius:8px;background:rgba(128,0,255,.16);border:1px solid rgba(154,61,255,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
+  .src-row .src-k{font-size:13.5px;font-weight:700;color:#fff;}
+  .src-row .src-v{font-size:12.5px;color:var(--dim);line-height:1.45;margin-top:3px;}
+  .src-row .src-v em{color:var(--ho-light);font-style:normal;font-weight:600;}
+
+  .note{margin-top:70px;border:1px solid var(--stroke-soft);border-radius:18px;padding:22px 24px;background:rgba(255,255,255,.025);}
+  .note h4{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+  .note ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;}
+  .note li{font-size:13.5px;color:var(--dim);line-height:1.5;display:flex;gap:10px;}
+  .note li b{color:#fff;font-weight:600;}
+  .note li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ho-violet);margin-top:8px;flex-shrink:0;}
+  .foot{margin-top:34px;font-size:12px;color:var(--dimmer);line-height:1.6;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow"><span class="brandmark">headout</span> · iOS Live Activity</span>
+    <h1>The Lion King, <span class="accent">live on the Lock Screen.</span></h1>
+    <p class="lede">A day-of companion built for a <b>West End evening</b> — doors and curtain, the dress code, the content warning, the interval, and the way home. Every tip below traces back to real Lyceum Theatre booking data.</p>
+  </header>
+
+  <!-- ============ SECTION 1: SHOW NIGHT ============ -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Show night, beat by beat</h2></div>
+    <p class="sub">The Live Activity follows the rhythm of a theatre evening. Tap a moment, or press play to watch the night unfold.</p>
+
+    <div class="controls">
+      <button class="tab active" data-state="0"><span class="dot"></span>Tonight</button>
+      <button class="tab" data-state="1"><span class="dot"></span>Time to leave</button>
+      <button class="tab" data-state="2"><span class="dot"></span>Doors open</button>
+      <button class="tab" data-state="3"><span class="dot"></span>Interval</button>
+      <button class="tab" data-state="4"><span class="dot"></span>Curtain down</button>
+      <button class="play" id="playBtn"><span id="playIcon">▶</span> <span id="playTxt">Play the night</span></button>
+    </div>
+
+    <div class="stage">
+      <div class="phone">
+        <div class="screen">
+          <svg class="skyline" viewBox="0 0 330 150" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 96 Q90 74 175 90 Q260 104 330 86 L330 150 L0 150 Z" fill="#1c0e2e"/>
+            <path d="M0 120 Q120 104 220 116 Q300 124 330 116 L330 150 L0 150 Z" fill="#120a20"/>
+            <!-- acacia -->
+            <g fill="#120a20">
+              <rect x="250" y="62" width="3.4" height="40" rx="1.5"/>
+              <ellipse cx="251.5" cy="60" rx="34" ry="7"/>
+            </g>
+            <g stroke="#120a20" stroke-width="2.4" fill="none" stroke-linecap="round">
+              <path d="M251 70 C240 64 232 64 224 66 M252 68 C264 62 276 62 284 66"/>
+            </g>
+          </svg>
+          <div class="veil"></div>
+
+          <div class="island" id="heroIsland">
+            <div class="il"><span class="hglyph">{{HGLYPH}}</span><span class="ilab" id="islandLab">Lion King</span></div>
+            <span class="ir" id="islandTrail">4h 02m</span>
+          </div>
+
+          <div class="lock-top">
+            <div class="lock-date">Saturday, 20 June</div>
+            <div class="lock-time" id="lockTime">15:28</div>
+          </div>
+
+          <div class="la-mount"><div class="la" id="laCard"></div></div>
+
+          <div class="lock-bottom">
+            <div class="lb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+            <div class="lb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          </div>
+        </div>
+      </div>
+      <div class="annot" id="annot"></div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: DYNAMIC ISLAND ============ -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Living in the Dynamic Island</h2></div>
+    <p class="sub">On iPhone 14 Pro and later it tucks into the Island — a glance when collapsed, the full picture on a long-press.</p>
+    <div class="di-grid">
+      <div class="di-card">
+        <div class="di-stage"><div class="gi minimal"><span class="hglyph">{{HGLYPH}}</span></div></div>
+        <div class="di-cap"><div class="t">Minimal</div><div class="d">When another app shares the Island — just the Headout mark, so guests know it's still counting down.</div></div>
+      </div>
+      <div class="di-card">
+        <div class="di-stage"><div class="gi compact"><span class="hglyph">{{HGLYPH}}</span><span class="ir">4h 02m</span></div></div>
+        <div class="di-cap"><div class="t">Compact</div><div class="d">The default glance — Headout on the left, a live countdown to curtain on the right.</div></div>
+      </div>
+      <div class="di-card">
+        <div class="di-stage">
+          <div class="gi expanded">
+            <div class="e-top">
+              <div class="e-thumb">{{SAVANNA}}</div>
+              <div class="e-info"><div class="e-title">The Lion King</div><div class="e-sub">Tonight · 19:30 · Lyceum</div></div>
+              <div class="e-trail"><div class="b">4h 02m</div><div class="l">to curtain</div></div>
+            </div>
+            <div class="e-btn">{{TICKET}} View ticket</div>
+          </div>
+        </div>
+        <div class="di-cap"><div class="t">Expanded</div><div class="d">Long-press for the full card — show, curtain time, and a one-tap jump to the mobile ticket.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: SOURCE DATA ============ -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Every tip comes from real booking data</h2></div>
+    <p class="sub">Nothing on the card is generic. Each chip maps to a field Headout already holds for this exact show and venue.</p>
+    <div class="src">
+      <div class="src-row"><div class="ic">🎭</div><div><div class="src-k">Dress code → “Smart casual”</div><div class="src-v">Listing: <em>smart casual or semi-formal</em> at the Lyceum.</div></div></div>
+      <div class="src-row"><div class="ic">⚡</div><div><div class="src-k">Content warning → “Strobe & haze”</div><div class="src-v">Listing: <em>smoke, fog effects and strobe lighting</em> — flagged for families and sensitive guests.</div></div></div>
+      <div class="src-row"><div class="ic">⏱️</div><div><div class="src-k">Runtime → “2h 30m + interval”</div><div class="src-v">Listing: <em>2 hr 30 min with interval</em> — powers the interval state.</div></div></div>
+      <div class="src-row"><div class="ic">🪪</div><div><div class="src-k">Entry → “Mobile ticket + photo ID”</div><div class="src-v">Redemption: <em>show mobile ticket and valid photo ID, no printout</em>.</div></div></div>
+      <div class="src-row"><div class="ic">🚇</div><div><div class="src-k">Getting there → “Covent Garden”</div><div class="src-v">Venue: <em>Lyceum Theatre, Wellington St</em>; nearest tube Covent Garden &amp; Charing Cross.</div></div></div>
+      <div class="src-row"><div class="ic">🧥</div><div><div class="src-k">Rain plan → “Cloakroom on site”</div><div class="src-v">Facilities: <em>cloakroom</em> for bags and umbrellas; security checks on arrival.</div></div></div>
+      <div class="src-row"><div class="ic">🪑</div><div><div class="src-k">Your seats → from the booking</div><div class="src-v">Seat block and row pulled straight from the order.</div></div></div>
+      <div class="src-row"><div class="ic">⭐</div><div><div class="src-k">Wrap-up → “Rate it”</div><div class="src-v">Show holds a <em>4.8 from 11,900+ guest ratings</em> — the prompt keeps that flywheel turning.</div></div></div>
+    </div>
+  </section>
+
+  <div class="note">
+    <h4>How it works under the hood</h4>
+    <ul>
+      <li><b>Push-to-start:</b> the activity launches on the afternoon of the performance — the guest never opens the app.</li>
+      <li><b>Show-aware updates:</b> a few server pushes move it through the night (tonight → leave → doors → interval → curtain), timed off the curtain and the 2h 30m runtime.</li>
+      <li><b>The interval beat:</b> a moment only a live show has — a 20-minute heads-up, where the queues are, and what's coming in Act II.</li>
+      <li><b>Indoor logic:</b> rain never panics the card — the venue's indoors, so weather only shapes the walk from the tube and the cloakroom nudge.</li>
+      <li><b>Lifespan:</b> active for the evening and lingering briefly after; the booking confirmation stays in email & push.</li>
+    </ul>
+  </div>
+
+  <p class="foot">Concept mockup for internal review · iOS rendering simplified for illustration · Headout purple #8000FF. Show name shown as text only; artwork, the Headout wordmark, and seat details are original placeholders, not licensed Disney assets.</p>
+</div>
+
+<script>
+const ICONS = {
+  HGLYPH:`<svg viewBox="0 0 24 24" fill="none"><path d="M6 4v16M18 4v16M6 12h12" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>`,
+  SAVANNA:`<svg viewBox="0 0 48 48" fill="none"><circle cx="19" cy="19" r="8.5" fill="#FFE7AE"/><path d="M0 40 Q14 33 26 36 Q40 40 48 36 L48 48 L0 48 Z" fill="#2A1208"/><path d="M31 41 L31 23" stroke="#2A1208" stroke-width="2.2" stroke-linecap="round"/><path d="M31 26 C26 22 22 23 19 24 M31 25 C36 21 41 22 45 24" stroke="#2A1208" stroke-width="1.7" fill="none" stroke-linecap="round"/><ellipse cx="31" cy="21.5" rx="15" ry="3.3" fill="#2A1208"/></svg>`,
+  TICKET:`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"/><path d="M13 7v10"/></svg>`,
+  CHEV:`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  STAR:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 20.5l1.4-6.8L2.2 9l6.9-.7z"/></svg>`,
+  QR:`<svg viewBox="0 0 100 100" fill="#120D1E"><rect x="0" y="0" width="28" height="28"/><rect x="8" y="8" width="12" height="12" fill="#fff"/><rect x="72" y="0" width="28" height="28"/><rect x="80" y="8" width="12" height="12" fill="#fff"/><rect x="0" y="72" width="28" height="28"/><rect x="8" y="80" width="12" height="12" fill="#fff"/><rect x="40" y="6" width="8" height="8"/><rect x="52" y="6" width="8" height="8"/><rect x="40" y="40" width="8" height="8"/><rect x="56" y="44" width="8" height="8"/><rect x="68" y="40" width="8" height="8"/><rect x="84" y="40" width="8" height="8"/><rect x="6" y="40" width="8" height="8"/><rect x="20" y="52" width="8" height="8"/><rect x="44" y="68" width="8" height="8"/><rect x="60" y="60" width="8" height="8"/><rect x="72" y="72" width="8" height="8"/><rect x="84" y="84" width="8" height="8"/><rect x="44" y="84" width="8" height="8"/><rect x="60" y="84" width="8" height="8"/></svg>`
+};
+function fillIcons(s){return s.replace(/\{\{(\w+)\}\}/g,(m,k)=>ICONS[k]||m);}
+document.body.innerHTML = fillIcons(document.body.innerHTML);
+
+const STATES = [
+  {
+    island:"Lion King", trail:"4h 02m", clock:"15:28",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Tonight · 19:30</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.SAVANNA}</div>
+        <div class="la-info"><div class="la-title">The Lion King</div><div class="la-sub">Lyceum Theatre · London · Doors 19:00</div></div>
+        <div class="la-trail"><div class="big">4h 02m</div><div class="lab">to curtain</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="em">🎭</span>Smart casual</span>
+        <span class="chip"><span class="em">⏱️</span>2h 30m + interval</span>
+        <span class="chip warn"><span class="em">⚡</span>Strobe & haze</span>
+        <span class="chip"><span class="em">🪪</span>Photo ID needed</span>
+      </div>`,
+    annot:{step:1,eye:"Fires on show afternoon",h:"Tonight's the night",p:"It appears hours before curtain with everything to plan the evening around — when doors open, what to wear, the strobe-and-smoke warning worth knowing if you're bringing kids, and the ID you'll need at the door.",
+      rows:[["Trigger","Push-to-start on the day of the performance"],["Reads","Curtain time, dress code, content warning"],["Says","Dress smart, doors at 19:00, ID ready"]]}
+  },
+  {
+    island:"Leave 18:50", trail:"18:50", clock:"18:42",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Time to leave</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.SAVANNA}</div>
+        <div class="la-info"><div class="la-title">Head to the Lyceum</div><div class="la-sub">Covent Garden · 4 min walk to doors</div></div>
+        <div class="la-trail"><div class="big">18:50</div><div class="lab">leave by</div></div>
+      </div>
+      <div class="la-route"><span class="pt"></span><span class="line"></span><span class="pt hollow"></span></div>
+      <div class="chips">
+        <span class="chip warn"><span class="em">🌧️</span>Rain — bring a brolly</span>
+        <span class="chip"><span class="em">🧥</span>Cloakroom on site</span>
+      </div>
+      <div class="la-cta">${ICONS.TICKET} Open your ticket ${ICONS.CHEV}</div>`,
+    annot:{step:2,eye:"Worked back from curtain",h:"Time to leave",p:"A leave-by time calculated from the route and the 19:00 doors. The venue's indoors, so the rain tip isn't alarm — it's about the short walk from the tube, with a reminder the Lyceum has a cloakroom for that wet brolly.",
+      rows:[["Trigger","Doors time minus live travel estimate"],["Reads","Location, route, tonight's weather"],["Says","Leave 18:50, brolly for the walk"]]}
+  },
+  {
+    island:"Doors open", trail:"19:30", clock:"19:04",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Doors are open</span></div>
+      <div class="la-body">
+        <div class="qr">${ICONS.QR}</div>
+        <div class="la-info"><div class="la-title">You're at the Lyceum</div><div class="la-sub">Show ticket + photo ID · security checks on entry</div></div>
+        <div class="la-trail"><div class="big">19:30</div><div class="lab">curtain</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip cta"><span class="em">🎟️</span>Mobile ticket ready</span>
+        <span class="chip"><span class="em">🪑</span>Stalls · Row F</span>
+        <span class="chip"><span class="em">🛅</span>Bags? Cloakroom</span>
+      </div>`,
+    annot:{step:3,eye:"Geofence on arrival",h:"Doors open",p:"At the venue it switches to the practical stuff — your mobile ticket front-and-centre, your seat block, and the cues that keep the entrance smooth: ID out, bags to the cloakroom, security ahead.",
+      rows:[["Trigger","Arrival near the Lyceum"],["Reads","Booking seat, entry & bag policy"],["Says","QR + ID, Row F, cloakroom for bags"]]}
+  },
+  {
+    island:"Interval", trail:"Act II", clock:"20:38",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Interval</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.SAVANNA}</div>
+        <div class="la-info"><div class="la-title">Act II starts soon</div><div class="la-sub">~20 min break · bars are open</div></div>
+        <div class="la-trail"><div class="big">20:55</div><div class="lab">Act II</div></div>
+      </div>
+      <div class="acts">
+        <div class="seg"><span class="bar done"></span><span class="lbl">Act I ✓</span></div>
+        <div class="seg"><span class="bar now"></span><span class="lbl on">Interval</span></div>
+        <div class="seg"><span class="bar"></span><span class="lbl">Act II</span></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="em">🥂</span>Bars open</span>
+        <span class="chip"><span class="em">🚻</span>Beat the queue</span>
+        <span class="chip"><span class="em">🎶</span>Act II: “Can You Feel the Love Tonight”</span>
+      </div>`,
+    annot:{step:4,eye:"The live-show moment",h:"The interval",p:"This is the beat a daytime attraction can't offer. Halfway through, it gives a 20-minute countdown, points to the bars and the shorter loos, and teases what's coming — a small, delightful reason the card feels alive.",
+      rows:[["Trigger","Runtime midpoint (Act I + interval)"],["Reads","2h 30m runtime, song list"],["Says","20 min, bars open, Act II up next"]]}
+  },
+  {
+    island:"Rate it ★", trail:"★", clock:"22:06",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Curtain down</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.SAVANNA}</div>
+        <div class="la-info"><div class="la-title">How was The Lion King?</div>
+          <div class="la-sub">Tap to rate · 4.8 from 11,900+ guests</div>
+          <div class="stars">${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="em">🌙</span>Night Tube runs tonight</span>
+        <span class="chip"><span class="em">🍸</span>Late supper nearby</span>
+        <span class="chip cta">What's on next ${ICONS.CHEV}</span>
+      </div>`,
+    annot:{step:5,eye:"After the curtain falls",h:"Curtain down",p:"It ends warmly — a one-tap rating while the standing ovation's still ringing, plus the genuinely useful late-night bits: it's Saturday, so the Night Tube's running, and here's where to eat and what to book next.",
+      rows:[["Trigger","Performance end time"],["Reads","Rating prompt, transit, nearby catalogue"],["Says","Rate it, Night Tube's on, here's what's next"]]}
+  }
+];
+
+const laCard=document.getElementById('laCard'),annot=document.getElementById('annot');
+const islandLab=document.getElementById('islandLab'),islandTrail=document.getElementById('islandTrail'),lockTime=document.getElementById('lockTime');
+const tabs=[...document.querySelectorAll('.tab')];
+let current=-1,playing=false,timer=null;
+
+function render(i){
+  if(i===current)return; current=i;
+  const s=STATES[i];
+  laCard.classList.add('swap');
+  setTimeout(()=>{laCard.innerHTML=s.card;laCard.classList.remove('swap');},200);
+  islandLab.textContent=s.island; islandTrail.textContent=s.trail; lockTime.textContent=s.clock;
+  const a=s.annot;
+  annot.innerHTML=`<div class="a-eye"><span class="step">${a.step}</span>${a.eye}</div><h3>${a.h}</h3><p>${a.p}</p><div class="a-meta">${a.rows.map(r=>`<div class="a-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>`;
+  tabs.forEach((t,ti)=>t.classList.toggle('active',ti===i));
+}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>{stop();render(i);}));
+const playBtn=document.getElementById('playBtn'),playIcon=document.getElementById('playIcon'),playTxt=document.getElementById('playTxt');
+function play(){playing=true;playIcon.textContent='❚❚';playTxt.textContent='Pause';timer=setInterval(()=>render((current+1)%STATES.length),3400);}
+function stop(){playing=false;playIcon.textContent='▶';playTxt.textContent='Play the night';if(timer)clearInterval(timer);timer=null;}
+playBtn.addEventListener('click',()=>playing?stop():play());
+render(0);
+</script>
+</body>
+</html>

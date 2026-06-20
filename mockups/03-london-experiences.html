@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Headout Live Activity — London Experiences</title>
+<style>
+  :root{
+    --ho-purple:#8000FF;--ho-violet:#9A3DFF;--ho-light:#C9A6FF;
+    --ink:#0A0710;--panel:#120D1E;
+    --glass:rgba(15,10,26,0.62);--stroke:rgba(255,255,255,0.12);--stroke-soft:rgba(255,255,255,0.07);
+    --text:#fff;--dim:rgba(255,255,255,0.64);--dimmer:rgba(255,255,255,0.40);--chip:rgba(255,255,255,0.10);
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:var(--font);background:var(--ink);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;border-radius:50%;filter:blur(130px);}
+  .bg-glow::before{width:620px;height:620px;background:radial-gradient(circle,#8000FF,transparent 60%);top:-180px;left:-120px;opacity:.40;}
+  .bg-glow::after{width:560px;height:560px;background:radial-gradient(circle,#3a6ad6,transparent 62%);bottom:-220px;right:-140px;opacity:.20;}
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:54px 24px 90px;}
+
+  header{margin-bottom:40px;max-width:780px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ho-light);padding:6px 12px;border:1px solid var(--stroke);border-radius:999px;background:rgba(128,0,255,.10);}
+  .brandmark{font-weight:800;letter-spacing:-.02em;}
+  h1{font-size:clamp(30px,4.6vw,50px);line-height:1.04;font-weight:800;letter-spacing:-.03em;margin:18px 0 14px;}
+  h1 .accent{background:linear-gradient(100deg,var(--ho-violet),#E0B6FF);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .lede{font-size:17px;line-height:1.55;color:var(--dim);max-width:660px;}
+  .lede b{color:#fff;font-weight:600;}
+
+  /* experience selector */
+  .exp-tabs{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 18px;}
+  .exp{appearance:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:11px;padding:11px 16px 11px 12px;border-radius:16px;border:1px solid var(--stroke);background:rgba(255,255,255,.03);color:var(--dim);transition:all .22s;}
+  .exp:hover{border-color:rgba(255,255,255,.24);color:#fff;}
+  .exp.active{color:#fff;border-color:transparent;box-shadow:0 10px 30px -10px rgba(128,0,255,.7);background:linear-gradient(120deg,rgba(128,0,255,.30),rgba(255,255,255,.05));}
+  .exp .ei{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .exp .ei svg{width:24px;height:24px;color:#fff;}
+  .exp .et{text-align:left;line-height:1.15;}
+  .exp .et b{display:block;font-size:14px;font-weight:700;}
+  .exp .et span{font-size:11.5px;color:var(--dim);}
+
+  .sig{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.55;color:var(--dim);background:rgba(255,255,255,.025);border:1px solid var(--stroke-soft);border-radius:14px;padding:14px 16px;margin-bottom:28px;}
+  .sig svg{width:17px;height:17px;color:var(--ho-light);flex-shrink:0;margin-top:2px;}
+  .sig em{color:var(--ho-light);font-style:normal;font-weight:600;}
+
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:30px;}
+  .tab{appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,.04);color:var(--dim);font-family:inherit;font-size:13.5px;font-weight:600;padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s;display:inline-flex;align-items:center;gap:8px;}
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.5;}
+  .tab:hover{color:#fff;border-color:rgba(255,255,255,.22);}
+  .tab.active{background:var(--ho-purple);border-color:var(--ho-purple);color:#fff;box-shadow:0 8px 26px -8px rgba(128,0,255,.7);}
+  .tab.active .dot{opacity:1;background:#fff;}
+  .play{margin-left:auto;appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,.04);color:#fff;font-family:inherit;font-weight:600;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+  .play:hover{border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.07);}
+
+  .stage{display:grid;grid-template-columns:minmax(280px,330px) 1fr;gap:48px;align-items:center;}
+  @media(max-width:760px){.stage{grid-template-columns:1fr;gap:34px;justify-items:center;}}
+
+  .phone{position:relative;width:330px;height:690px;border-radius:58px;background:#000;padding:11px;box-shadow:0 0 0 2px #2a2a2e,0 40px 80px -28px rgba(0,0,0,.85),0 0 90px -30px rgba(128,0,255,.5);flex-shrink:0;}
+  .screen{position:relative;width:100%;height:100%;border-radius:48px;overflow:hidden;transition:background .5s ease;}
+  .skyline{position:absolute;left:0;right:0;bottom:0;height:150px;opacity:.92;}
+  .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,4,16,.30),rgba(8,4,16,.02) 32%,rgba(8,4,16,.32));}
+
+  .island{position:absolute;top:14px;left:50%;transform:translateX(-50%);height:35px;min-width:118px;background:#000;border-radius:22px;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:0 11px 0 9px;gap:10px;overflow:hidden;}
+  .island .il{display:flex;align-items:center;gap:7px;}
+  .hglyph{border-radius:6px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .island .hglyph{width:19px;height:19px;} .island .hglyph svg{width:12px;height:12px;}
+  .island .ilab{font-size:11.5px;font-weight:600;color:#fff;white-space:nowrap;}
+  .island .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  .lock-top{position:absolute;top:64px;left:0;right:0;text-align:center;z-index:4;padding:0 24px;}
+  .lock-date{font-size:15px;font-weight:600;color:rgba(255,255,255,.92);margin-bottom:-4px;}
+  .lock-time{font-size:74px;font-weight:600;letter-spacing:-.02em;line-height:1;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.25);font-variant-numeric:tabular-nums;}
+
+  .la-mount{position:absolute;left:14px;right:14px;top:248px;z-index:5;}
+  .la{background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%);border:1px solid var(--stroke);border-radius:24px;padding:13px 14px 14px;box-shadow:0 18px 40px -18px rgba(0,0,0,.7);transition:opacity .4s,transform .4s;}
+  .la.swap{opacity:0;transform:translateY(8px);}
+  .la-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+  .la-brand{display:flex;align-items:center;gap:7px;}
+  .la-brand .hglyph{width:18px;height:18px;} .la-brand .hglyph svg{width:11px;height:11px;}
+  .la-brand .name{font-size:13px;font-weight:800;letter-spacing:-.01em;}
+  .la-state{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ho-light);}
+  .la-body{display:flex;gap:12px;align-items:center;}
+  .thumb{width:54px;height:54px;border-radius:14px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);}
+  .thumb svg{width:40px;height:40px;color:#fff;}
+  .la-info{flex:1;min-width:0;}
+  .la-title{font-size:15.5px;font-weight:700;letter-spacing:-.01em;line-height:1.18;}
+  .la-sub{font-size:12.5px;color:var(--dim);margin-top:2px;line-height:1.3;}
+  .la-trail{text-align:right;flex-shrink:0;padding-left:6px;}
+  .la-trail .big{font-size:19px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+  .la-trail .lab{font-size:10px;font-weight:600;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;margin-top:1px;}
+  .la-route{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .la-route .line{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.14);position:relative;overflow:hidden;}
+  .la-route .line::after{content:"";position:absolute;left:0;top:0;bottom:0;width:42%;background:linear-gradient(90deg,var(--ho-violet),var(--ho-light));border-radius:4px;}
+  .la-route .pt{width:8px;height:8px;border-radius:50%;background:var(--ho-light);}
+  .la-route .pt.hollow{background:transparent;border:2px solid rgba(255,255,255,.5);}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--chip);border:1px solid var(--stroke-soft);padding:5px 9px;border-radius:9px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.92);white-space:nowrap;}
+  .chip .em{font-size:12.5px;line-height:1;}
+  .chip.cta{background:rgba(128,0,255,.22);border-color:rgba(154,61,255,.5);color:#fff;}
+  .chip.warn{background:rgba(255,170,60,.16);border-color:rgba(255,170,60,.42);}
+  .chip.alert{background:rgba(255,90,90,.18);border-color:rgba(255,120,120,.5);}
+  .la-cta{margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--ho-purple);border-radius:11px;padding:9px;font-size:13px;font-weight:700;box-shadow:0 8px 22px -10px rgba(128,0,255,.9);}
+  .la-cta svg{width:14px;height:14px;}
+  .qr{width:42px;height:42px;border-radius:8px;background:#fff;padding:4px;flex-shrink:0;}
+  .qr svg{width:100%;height:100%;}
+  .stars{display:flex;gap:4px;margin-top:5px;} .stars svg{width:18px;height:18px;color:#FFC53D;}
+  .lock-bottom{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:space-between;padding:0 40px;z-index:4;}
+  .lb-btn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.32);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;}
+  .lb-btn svg{width:18px;height:18px;color:#fff;}
+
+  .annot{max-width:430px;}
+  .annot .a-eye{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ho-violet);margin-bottom:8px;display:flex;align-items:center;gap:9px;}
+  .annot .a-eye .step{width:24px;height:24px;border-radius:50%;background:rgba(128,0,255,.18);border:1px solid rgba(154,61,255,.5);display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .annot h3{font-size:23px;font-weight:700;letter-spacing:-.02em;margin:0 0 12px;}
+  .annot p{color:var(--dim);font-size:15px;line-height:1.6;margin:0 0 18px;}
+  .annot p em{color:var(--ho-light);font-style:normal;font-weight:600;}
+  .a-meta{display:grid;gap:10px;}
+  .a-row{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  .a-row .k{color:var(--ho-light);font-weight:700;min-width:64px;flex-shrink:0;}
+  .a-row .v{color:var(--dim);}
+
+  .sec{margin-top:78px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+  .sec-num{font-size:13px;font-weight:700;color:var(--ho-violet);}
+  .sec h2{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0;}
+  .sec p.sub{color:var(--dim);font-size:15px;line-height:1.5;margin:6px 0 30px;max-width:660px;}
+
+  .di-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:760px){.di-grid{grid-template-columns:1fr;}}
+  .di-card{border:1px solid var(--stroke-soft);border-radius:20px;overflow:hidden;background:var(--panel);}
+  .di-stage{position:relative;height:160px;background:radial-gradient(110% 80% at 50% 110%,rgba(128,0,255,.32),transparent 60%),linear-gradient(180deg,#1a0f33,#43306e);display:flex;justify-content:center;padding-top:18px;}
+  .di-cap{padding:14px 16px 16px;} .di-cap .t{font-size:14px;font-weight:700;} .di-cap .d{font-size:12.5px;color:var(--dim);line-height:1.45;margin-top:4px;}
+  .gi{position:relative;background:#000;border-radius:22px;display:flex;align-items:center;height:35px;}
+  .gi.minimal{width:46px;justify-content:center;} .gi.minimal .hglyph{width:20px;height:20px;} .gi.minimal .hglyph svg{width:12px;height:12px;}
+  .gi.compact{min-width:158px;justify-content:space-between;padding:0 12px 0 9px;gap:12px;} .gi.compact .hglyph{width:20px;height:20px;} .gi.compact .hglyph svg{width:12px;height:12px;} .gi.compact .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;}
+  .gi.expanded{width:252px;height:auto;flex-direction:column;align-items:stretch;border-radius:26px;padding:13px;gap:10px;align-self:flex-start;}
+  .gi.expanded .e-top{display:flex;align-items:center;gap:10px;}
+  .gi.expanded .e-thumb{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+  .gi.expanded .e-thumb svg{width:30px;height:30px;color:#fff;}
+  .gi.expanded .e-info{flex:1;min-width:0;} .gi.expanded .e-title{font-size:13.5px;font-weight:700;line-height:1.15;} .gi.expanded .e-sub{font-size:11.5px;color:var(--dim);margin-top:2px;}
+  .gi.expanded .e-trail{text-align:right;} .gi.expanded .e-trail .b{font-size:16px;font-weight:800;color:var(--ho-light);font-variant-numeric:tabular-nums;} .gi.expanded .e-trail .l{font-size:9px;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;}
+  .gi.expanded .e-btn{background:var(--ho-purple);border-radius:10px;padding:8px;text-align:center;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;} .gi.expanded .e-btn svg{width:13px;height:13px;}
+
+  .note{margin-top:70px;border:1px solid var(--stroke-soft);border-radius:18px;padding:22px 24px;background:rgba(255,255,255,.025);}
+  .note h4{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+  .note ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;}
+  .note li{font-size:13.5px;color:var(--dim);line-height:1.5;display:flex;gap:10px;} .note li b{color:#fff;font-weight:600;}
+  .note li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ho-violet);margin-top:8px;flex-shrink:0;}
+  .foot{margin-top:34px;font-size:12px;color:var(--dimmer);line-height:1.6;}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;}}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="wrap">
+  <header>
+    <span class="eyebrow"><span class="brandmark">headout</span> · iOS Live Activity</span>
+    <h1>One companion, <span class="accent">every kind of experience.</span></h1>
+    <p class="lede">The same Lock Screen Live Activity, adapting to what you actually booked. A <b>30-minute ride</b>, a <b>self-paced fortress</b>, and a <b>coach day-trip</b> need completely different intelligence — switch between them and watch the playbook change.</p>
+  </header>
+
+  <div class="exp-tabs" id="expTabs"></div>
+  <div class="sig" id="sig"></div>
+
+  <div class="controls" id="controls"></div>
+
+  <div class="stage">
+    <div class="phone">
+      <div class="screen" id="screen">
+        <div class="skyline" id="skyline"></div>
+        <div class="veil"></div>
+        <div class="island">
+          <div class="il"><span class="hglyph">{{HGLYPH}}</span><span class="ilab" id="islandLab"></span></div>
+          <span class="ir" id="islandTrail"></span>
+        </div>
+        <div class="lock-top"><div class="lock-date">Saturday, 20 June</div><div class="lock-time" id="lockTime"></div></div>
+        <div class="la-mount"><div class="la" id="laCard"></div></div>
+        <div class="lock-bottom">
+          <div class="lb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+          <div class="lb-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <div class="annot" id="annot"></div>
+  </div>
+
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">·</span><h2>In the Dynamic Island</h2></div>
+    <p class="sub">Same three states for whichever experience is selected above — glanceable countdown, full card on a long-press.</p>
+    <div class="di-grid">
+      <div class="di-card"><div class="di-stage"><div class="gi minimal"><span class="hglyph">{{HGLYPH}}</span></div></div><div class="di-cap"><div class="t">Minimal</div><div class="d">Just the Headout mark when another app shares the Island.</div></div></div>
+      <div class="di-card"><div class="di-stage"><div class="gi compact"><span class="hglyph">{{HGLYPH}}</span><span class="ir" id="diCompact"></span></div></div><div class="di-cap"><div class="t">Compact</div><div class="d">The default glance — a live countdown to your slot, entry, or coach.</div></div></div>
+      <div class="di-card"><div class="di-stage">
+        <div class="gi expanded">
+          <div class="e-top"><div class="e-thumb" id="diThumb"></div><div class="e-info"><div class="e-title" id="diTitle"></div><div class="e-sub" id="diSub"></div></div><div class="e-trail"><div class="b" id="diTrail"></div><div class="l">to go</div></div></div>
+          <div class="e-btn">{{TICKET}} View ticket</div>
+        </div></div><div class="di-cap"><div class="t">Expanded</div><div class="d">Long-press for the experience, countdown, and a one-tap ticket.</div></div></div>
+    </div>
+  </section>
+
+  <div class="note">
+    <h4>Same pattern, three different playbooks</h4>
+    <ul>
+      <li><b>London Eye</b> — a timed ride, so weather is read as <b>visibility</b>; it warns about banned bags and the 30–60 min queue, and ends on the SEA LIFE combo next door.</li>
+      <li><b>Tower of London</b> — self-paced, so it sequences you (<b>Crown Jewels before the queue builds</b>), times the next Beefeater tour, cues the included AI audio guide, and cross-sells the Tower Bridge combo.</li>
+      <li><b>Stonehenge</b> — built around the coach: the two beats that matter are <b>making the 08:00 pickup</b> and <b>being back before the coach leaves you in Wiltshire</b> — the strongest no-show case in the whole idea.</li>
+      <li>One engine, driven by experience type + venue rules + live weather. The card is never generic, and it never clutters past ~3 tips.</li>
+    </ul>
+  </div>
+  <p class="foot">Concept mockup for internal review · iOS rendering simplified · Headout purple #8000FF. Times, seats, and artwork are original placeholders for illustration.</p>
+</div>
+
+<script>
+const I = {
+  HGLYPH:`<svg viewBox="0 0 24 24" fill="none"><path d="M6 4v16M18 4v16M6 12h12" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>`,
+  WHEEL:`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="24" cy="20" r="13.5"/><circle cx="24" cy="20" r="2.3" fill="currentColor"/><path d="M24 6.5V33.5M10.5 20H37.5M14.5 10.5L33.5 29.5M33.5 10.5L14.5 29.5"/><path d="M17 31L24 44L31 31"/></svg>`,
+  FORTRESS:`<svg viewBox="0 0 48 48" fill="currentColor"><rect x="15" y="17" width="18" height="24"/><rect x="10" y="13" width="6" height="28" rx="1"/><rect x="32" y="13" width="6" height="28" rx="1"/><rect x="10" y="10" width="2" height="3"/><rect x="14" y="10" width="2" height="3"/><rect x="32" y="10" width="2" height="3"/><rect x="36" y="10" width="2" height="3"/><rect x="16" y="14" width="2" height="3"/><rect x="20" y="14" width="2" height="3"/><rect x="26" y="14" width="2" height="3"/><rect x="30" y="14" width="2" height="3"/><path d="M21 41V32a3 3 0 0 1 6 0v9z" fill="#000" fill-opacity=".28"/></svg>`,
+  STONES:`<svg viewBox="0 0 48 48" fill="currentColor"><rect x="7" y="20" width="6" height="22" rx="1"/><rect x="17" y="20" width="6" height="22" rx="1"/><rect x="4" y="14" width="22" height="6" rx="1.5"/><rect x="31" y="25" width="5" height="17" rx="1"/><rect x="39" y="25" width="5" height="17" rx="1"/><rect x="29" y="20" width="17" height="5" rx="1.5"/></svg>`,
+  TICKET:`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"/><path d="M13 7v10"/></svg>`,
+  CHEV:`<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  STAR:`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 20.5l1.4-6.8L2.2 9l6.9-.7z"/></svg>`,
+  INFO:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>`,
+  QR:`<svg viewBox="0 0 100 100" fill="#120D1E"><rect x="0" y="0" width="28" height="28"/><rect x="8" y="8" width="12" height="12" fill="#fff"/><rect x="72" y="0" width="28" height="28"/><rect x="80" y="8" width="12" height="12" fill="#fff"/><rect x="0" y="72" width="28" height="28"/><rect x="8" y="80" width="12" height="12" fill="#fff"/><rect x="40" y="6" width="8" height="8"/><rect x="52" y="6" width="8" height="8"/><rect x="40" y="40" width="8" height="8"/><rect x="56" y="44" width="8" height="8"/><rect x="68" y="40" width="8" height="8"/><rect x="84" y="40" width="8" height="8"/><rect x="6" y="40" width="8" height="8"/><rect x="20" y="52" width="8" height="8"/><rect x="44" y="68" width="8" height="8"/><rect x="60" y="60" width="8" height="8"/><rect x="72" y="72" width="8" height="8"/><rect x="84" y="84" width="8" height="8"/><rect x="44" y="84" width="8" height="8"/><rect x="60" y="84" width="8" height="8"/></svg>`
+};
+function fill(s){return s.replace(/\{\{(\w+)\}\}/g,(m,k)=>I[k]||m);}
+document.body.innerHTML = fill(document.body.innerHTML);
+
+// skyline builders
+const SKY = {
+  eye:`<svg viewBox="0 0 330 150" preserveAspectRatio="none"><path d="M0 116 H330 V150 H0Z" fill="#101a36"/><g fill="#101a36"><rect x="40" y="50" width="13" height="66"/><polygon points="40,50 53,50 46.5,38"/><rect x="44" y="58" width="5" height="5" fill="#1b2748"/></g><g stroke="#101a36" stroke-width="3.4" fill="none"><circle cx="250" cy="76" r="36"/><path d="M250 40V112M214 76H286M226 52L274 100M274 52L226 100"/></g><g fill="#101a36"><circle cx="250" cy="40" r="3.4"/><circle cx="286" cy="76" r="3.4"/><circle cx="250" cy="112" r="3.4"/><circle cx="214" cy="76" r="3.4"/><path d="M242 108L250 124L258 108"/></g></svg>`,
+  tower:`<svg viewBox="0 0 330 150" preserveAspectRatio="none"><path d="M0 104 H330 V150 H0Z" fill="#1d1b30"/><g fill="#1d1b30"><rect x="120" y="58" width="90" height="50"/><rect x="104" y="46" width="22" height="62" rx="2"/><rect x="204" y="46" width="22" height="62" rx="2"/><rect x="104" y="40" width="5" height="6"/><rect x="113" y="40" width="5" height="6"/><rect x="121" y="40" width="5" height="6"/><rect x="204" y="40" width="5" height="6"/><rect x="213" y="40" width="5" height="6"/><rect x="221" y="40" width="5" height="6"/><rect x="128" y="52" width="5" height="6"/><rect x="140" y="52" width="5" height="6"/><rect x="152" y="52" width="5" height="6"/><rect x="164" y="52" width="5" height="6"/><rect x="176" y="52" width="5" height="6"/><rect x="188" y="52" width="5" height="6"/><rect x="197" y="52" width="5" height="6"/></g></svg>`,
+  stone:`<svg viewBox="0 0 330 150" preserveAspectRatio="none"><path d="M0 118 Q90 108 175 116 Q260 122 330 112 V150 H0Z" fill="#160d28"/><g fill="#160d28"><rect x="150" y="74" width="16" height="46"/><rect x="184" y="74" width="16" height="46"/><rect x="144" y="62" width="62" height="14" rx="2"/><rect x="214" y="86" width="13" height="34"/><rect x="236" y="86" width="13" height="34"/><rect x="210" y="76" width="43" height="12" rx="2"/><rect x="96" y="90" width="12" height="30"/><rect x="114" y="90" width="12" height="30"/><rect x="92" y="82" width="38" height="10" rx="2"/></g></svg>`
+};
+
+const T = {
+  eye:'linear-gradient(155deg,#5AB0FF,#2E6AD6 58%,#6A2EA0)',
+  tower:'linear-gradient(155deg,#9aa0b4,#5b5a76 54%,#382b50)',
+  stone:'linear-gradient(155deg,#FFB23E,#FF7A3D 52%,#5b2e7a)'
+};
+const SCREEN = {
+  eye:'radial-gradient(80% 50% at 50% 98%,rgba(120,180,255,.45),transparent 60%),linear-gradient(180deg,#142250,#27407e 32%,#7b5a96 62%,#d98a5a 86%,#ffc070 100%)',
+  tower:'radial-gradient(80% 50% at 50% 100%,rgba(210,180,120,.30),transparent 60%),linear-gradient(180deg,#201d36,#3a3656 34%,#6b6480 64%,#a98f66 88%,#e0c187 100%)',
+  stone:'radial-gradient(80% 52% at 50% 98%,rgba(255,150,60,.5),transparent 60%),linear-gradient(180deg,#0f1638,#262458 30%,#6a3a6e 58%,#d4753f 84%,#ffb24e 100%)'
+};
+
+function thumb(exp,html){return `<div class="thumb" style="background:${T[exp]}">${html||I[EXP[exp].icon]}</div>`;}
+
+const EXP = {
+  eye:{ name:"London Eye", tag:"South Bank · 30-min ride", icon:"WHEEL",
+    diSub:"Today · 16:30 · South Bank", diTrail:"3h 02m",
+    sig:`Reads the forecast as <em>visibility</em> — clear today, so it promises views to Windsor. It also knows big bags are banned and the queue can run 30–60 min.`,
+    tabs:["Today","Leave","Boarding","At the top"],
+    states:[
+      {island:"London Eye",trail:"in 3h",clock:"13:24",
+       card:exp=>`<div class="la-body">${thumb('eye')}<div class="la-info"><div class="la-title">London Eye</div><div class="la-sub">South Bank · slot 16:30</div></div><div class="la-trail"><div class="big">in 3h</div><div class="lab">to slot</div></div></div>
+         <div class="chips"><span class="chip"><span class="em">☀️</span>Clear — great views</span><span class="chip warn"><span class="em">🛍️</span>No big bags allowed</span><span class="chip"><span class="em">⏳</span>Queue 30–60m</span></div>`,
+       annot:{step:1,eye:"Fires on the day",h:"Plan the visit",p:"It lands with the thing that makes or breaks an observation wheel: the forecast read as <em>visibility</em>. Clear skies today, so it promises the view will run for miles — and flags the bag ban and queue so you're not caught out at the gate.",rows:[["Reads","Forecast → visibility, bag policy, queue"],["Says","Clear views, pack light, arrive early"]]}},
+      {island:"Leave 15:40",trail:"15:40",clock:"15:34",
+       card:exp=>`<div class="la-body">${thumb('eye')}<div class="la-info"><div class="la-title">Head to the South Bank</div><div class="la-sub">Waterloo · 6 min · allow for the queue</div></div><div class="la-trail"><div class="big">15:40</div><div class="lab">leave by</div></div></div>
+         <div class="la-route"><span class="pt"></span><span class="line"></span><span class="pt hollow"></span></div>
+         <div class="chips"><span class="chip"><span class="em">🌤️</span>Clear · 18°</span><span class="chip"><span class="em">🎟️</span>E-ticket + ID ready</span></div>
+         <div class="la-cta">${I.TICKET} Open your ticket ${I.CHEV}</div>`,
+       annot:{step:2,eye:"Slot minus travel + queue",h:"Time to leave",p:"A leave-by time that builds in the 30–60 minute queue most people forget — so a timed slot doesn't slip away in the line.",rows:[["Reads","Location, queue buffer"],["Says","Leave 15:40, ticket one tap away"]]}},
+      {island:"Boarding",trail:"16:30",clock:"16:11",
+       card:exp=>`<div class="la-body"><div class="qr">${I.QR}</div><div class="la-info"><div class="la-title">You're at the London Eye</div><div class="la-sub">E-ticket + photo ID · brief security check</div></div><div class="la-trail"><div class="big">16:30</div><div class="lab">your pod</div></div></div>
+         <div class="chips"><span class="chip cta"><span class="em">🎟️</span>Mobile voucher</span><span class="chip"><span class="em">🛅</span>Bags → cloakroom</span><span class="chip"><span class="em">👀</span>Windsor visible today</span></div>`,
+       annot:{step:3,eye:"Geofence on arrival",h:"Boarding",p:"At the wheel it surfaces the voucher and ID, points big bags to the cloakroom, and — because it's clear — tells you that you'll see all the way to Windsor from the top.",rows:[["Reads","Entry + bag policy, weather"],["Says","QR + ID, bags away, big views"]]}},
+      {island:"At the top",trail:"135m",clock:"16:33",
+       card:exp=>`<div class="la-body">${thumb('eye')}<div class="la-info"><div class="la-title">360° from 135m</div><div class="la-sub">Spot Big Ben, St Paul's & the Shard</div></div><div class="la-trail"><div class="big">30 min</div><div class="lab">rotation</div></div></div>
+         <div class="chips"><span class="chip"><span class="em">📸</span>Best photos now</span><span class="chip cta"><span class="em">🐟</span>SEA LIFE next door — add</span></div>`,
+       annot:{step:4,eye:"Boarded",h:"At the top",p:"During the rotation it turns into a guide — what to look for, the best photo window — then nudges the SEA LIFE aquarium right next door, the natural add-on for the South Bank.",rows:[["Reads","Landmarks, nearby catalogue"],["Says","What to spot, then SEA LIFE combo"]]}}
+    ]},
+
+  tower:{ name:"Tower of London", tag:"Crown Jewels · self-paced", icon:"FORTRESS",
+    diSub:"Today · 10:00 · Crown Jewels", diTrail:"1h 58m",
+    sig:`Self-paced, so it <em>sequences</em> you — Crown Jewels before the queue builds — times the next Beefeater tour, and cues the included AI audio guide.`,
+    tabs:["Today","Leave","Inside","Wrap-up"],
+    states:[
+      {island:"Tower",trail:"in 2h",clock:"08:06",
+       card:exp=>`<div class="la-body">${thumb('tower')}<div class="la-info"><div class="la-title">Tower of London</div><div class="la-sub">Crown Jewels · entry 10:00 · allow 3 hrs</div></div><div class="la-trail"><div class="big">in 2h</div><div class="lab">to entry</div></div></div>
+         <div class="chips"><span class="chip"><span class="em">👟</span>Cobbles — comfy shoes</span><span class="chip cta"><span class="em">🎧</span>Download the AI audio guide</span><span class="chip"><span class="em">🧥</span>Dress for the weather</span></div>`,
+       annot:{step:1,eye:"Fires on the day",h:"Before you go",p:"For a sprawling outdoor fortress it sets expectations — comfortable shoes for the cobbles, dress for the weather, and a prompt to <em>download the included AI audio guide</em> before you lose signal inside the walls.",rows:[["Reads","Outdoor, runtime, included AI guide"],["Says","Shoes, download guide, allow 3 hrs"]]}},
+      {island:"Leave 09:15",trail:"09:15",clock:"09:04",
+       card:exp=>`<div class="la-body">${thumb('tower')}<div class="la-info"><div class="la-title">Head to the Tower</div><div class="la-sub">Tower Hill · 5 min walk</div></div><div class="la-trail"><div class="big">09:15</div><div class="lab">leave by</div></div></div>
+         <div class="la-route"><span class="pt"></span><span class="line"></span><span class="pt hollow"></span></div>
+         <div class="chips"><span class="chip"><span class="em">☁️</span>16° cloudy</span><span class="chip"><span class="em">🎟️</span>Ticket + ID ready</span></div>
+         <div class="la-cta">${I.TICKET} Open your ticket ${I.CHEV}</div>`,
+       annot:{step:2,eye:"Entry minus travel",h:"Time to leave",p:"A simple leave-by from Tower Hill, with the ticket ready — so a self-guided visit starts on the right foot.",rows:[["Reads","Location, entry time"],["Says","Leave 09:15, ticket ready"]]}},
+      {island:"Crown Jewels",trail:"11:30",clock:"09:57",
+       card:exp=>`<div class="la-body">${thumb('tower',I.STONES?I[EXP.tower.icon]:'')}<div class="la-info"><div class="la-title">In — go to the Jewels first</div><div class="la-sub">The Crown Jewels queue builds after 11</div></div><div class="la-trail"><div class="big">11:30</div><div class="lab">Beefeater</div></div></div>
+         <div class="chips"><span class="chip cta"><span class="em">👑</span>Crown Jewels first</span><span class="chip"><span class="em">🎖️</span>Yeoman tour 11:30 · Main Gate</span><span class="chip"><span class="em">🎧</span>AI guide in your ears</span></div>`,
+       annot:{step:3,eye:"Geofence on arrival",h:"Inside",p:"This is the insider move a static ticket can't make: it <em>routes</em> you to the Crown Jewels before the mid-morning queue forms, flags the next free Beefeater tour, and confirms the audio guide is live.",rows:[["Reads","Queue pattern, tour times, AI guide"],["Says","Jewels first, next tour 11:30"]]}},
+      {island:"Rate it ★",trail:"★",clock:"12:38",
+       card:exp=>`<div class="la-body">${thumb('tower')}<div class="la-info"><div class="la-title">How was the Tower?</div><div class="la-sub">Tap to rate · 4.5 from 18,500+ guests</div><div class="stars">${I.STAR}${I.STAR}${I.STAR}${I.STAR}${I.STAR}</div></div></div>
+         <div class="chips"><span class="chip cta"><span class="em">🌉</span>Tower Bridge · 5 min (save 8%)</span><span class="chip"><span class="em">🍴</span>Lunch by the river</span></div>`,
+       annot:{step:4,eye:"After you leave",h:"Wrap-up",p:"A rating while it's fresh, then the cross-sell the listing itself pushes — Tower Bridge is a five-minute walk and bundles at 8% off. The Lock Screen becomes the combo upsell.",rows:[["Reads","Rating, combo catalogue"],["Says","Rate it, Tower Bridge combo"]]}}
+    ]},
+
+  stone:{ name:"Stonehenge", tag:"Coach day-trip from London", icon:"STONES",
+    diSub:"Today · 08:00 · coach", diTrail:"1h 06m",
+    sig:`Built around the coach. The two beats that matter: <em>make the 08:00 pickup</em>, and <em>be back before it leaves you</em> in Wiltshire — the strongest no-show case in the idea.`,
+    tabs:["Today","Leave now","At the stones","Heading back"],
+    states:[
+      {island:"Stonehenge",trail:"08:00",clock:"06:48",
+       card:exp=>`<div class="la-body">${thumb('stone')}<div class="la-info"><div class="la-title">Stonehenge Day Trip</div><div class="la-sub">Coach from London · be at pickup 07:45</div></div><div class="la-trail"><div class="big">1h 12m</div><div class="lab">to pickup</div></div></div>
+         <div class="chips"><span class="chip warn"><span class="em">🥶</span>Exposed site — layers</span><span class="chip warn"><span class="em">🌬️</span>Wind & rain proof</span><span class="chip"><span class="em">💧</span>Water + snacks</span></div>`,
+       annot:{step:1,eye:"Fires early morning",h:"Before the coach",p:"Stonehenge sits in open fields with nothing to break the wind, so it leads with warm, waterproof layers and supplies for a 6–7 hour day — and starts the clock on the pickup, not the stones.",rows:[["Reads","Exposed-site weather, departure"],["Says","Layers, water, pickup 07:45"]]}},
+      {island:"COACH 08:00",trail:"08:00",clock:"07:03",
+       card:exp=>`<div class="la-body">${thumb('stone')}<div class="la-info"><div class="la-title">Leave now for the coach</div><div class="la-sub">Pickup: Victoria · departs 08:00 sharp</div></div><div class="la-trail"><div class="big">08:00</div><div class="lab">departs</div></div></div>
+         <div class="la-route"><span class="pt"></span><span class="line"></span><span class="pt hollow"></span></div>
+         <div class="chips"><span class="chip alert"><span class="em">⏰</span>The coach won't wait</span><span class="chip"><span class="em">🎟️</span>Show voucher to driver</span></div>
+         <div class="la-cta">${I.TICKET} Open your voucher ${I.CHEV}</div>`,
+       annot:{step:2,eye:"The make-or-break beat",h:"Leave now",p:"Miss a coach and you lose the entire £77 day — there's no walk-up next slot. This is the single highest-value moment in the whole concept: a hard, unambiguous <em>leave now, it won't wait</em>.",rows:[["Reads","Pickup point, departure time"],["Says","Leave now, departs 08:00 sharp"]]}},
+      {island:"Back by 13:15",trail:"13:15",clock:"11:24",
+       card:exp=>`<div class="la-body">${thumb('stone')}<div class="la-info"><div class="la-title">Back at the coach by 13:15</div><div class="la-sub">1h 20m here · don't miss the return</div></div><div class="la-trail"><div class="big">13:15</div><div class="lab">coach back</div></div></div>
+         <div class="chips"><span class="chip alert"><span class="em">🚌</span>Return 13:15 — be there</span><span class="chip"><span class="em">🎧</span>Audio guide on</span><span class="chip"><span class="em">🌬️</span>Brisk & breezy</span></div>`,
+       annot:{step:3,eye:"At the site",h:"At the stones",p:"The flip side of the same anxiety: explore freely, but the card holds a firm return time so nobody gets stranded in the countryside while the coach pulls away. Live, on the wrist, no clock-watching needed.",rows:[["Reads","Itinerary timing"],["Says","Enjoy it, back at the coach 13:15"]]}},
+      {island:"Rate it ★",trail:"★",clock:"13:28",
+       card:exp=>`<div class="la-body">${thumb('stone')}<div class="la-info"><div class="la-title">Heading back to London</div><div class="la-sub">Arrive ~15:30 · tap to rate your trip</div><div class="stars">${I.STAR}${I.STAR}${I.STAR}${I.STAR}${I.STAR}</div></div></div>
+         <div class="chips"><span class="chip"><span class="em">🛋️</span>Relax · arrive ~15:30</span><span class="chip cta"><span class="em">🏰</span>Next: Windsor & Bath trip</span></div>`,
+       annot:{step:4,eye:"On the way home",h:"Heading back",p:"On the coach home it settles you with an ETA, takes the rating while the day's still vivid, and cross-sells the full-day Windsor & Bath trip — the obvious next adventure for someone who liked this one.",rows:[["Reads","Return ETA, day-trip catalogue"],["Says","Relax, rate, see Windsor & Bath"]]}}
+    ]}
+};
+const ORDER=["eye","tower","stone"];
+
+// build experience selector
+const expTabs=document.getElementById('expTabs');
+ORDER.forEach((id,idx)=>{
+  const e=EXP[id];
+  const b=document.createElement('button');
+  b.className='exp'+(idx===0?' active':''); b.dataset.exp=id;
+  b.innerHTML=`<span class="ei" style="background:${T[id]}">${I[e.icon]}</span><span class="et"><b>${e.name}</b><span>${e.tag}</span></span>`;
+  b.addEventListener('click',()=>{stop();selectExp(id);});
+  expTabs.appendChild(b);
+});
+
+const controls=document.getElementById('controls');
+const sig=document.getElementById('sig');
+const laCard=document.getElementById('laCard'), annot=document.getElementById('annot');
+const islandLab=document.getElementById('islandLab'), islandTrail=document.getElementById('islandTrail'), lockTime=document.getElementById('lockTime');
+const screen=document.getElementById('screen'), skyline=document.getElementById('skyline');
+const diCompact=document.getElementById('diCompact'),diThumb=document.getElementById('diThumb'),diTitle=document.getElementById('diTitle'),diSub=document.getElementById('diSub'),diTrail=document.getElementById('diTrail');
+
+let curExp="eye", curState=-1, playing=false, timer=null;
+
+function selectExp(id){
+  curExp=id; const e=EXP[id];
+  document.querySelectorAll('.exp').forEach(b=>b.classList.toggle('active',b.dataset.exp===id));
+  screen.style.background=SCREEN[id];
+  skyline.innerHTML=SKY[id];
+  sig.innerHTML=`${I.INFO}<span>${e.sig}</span>`;
+  // state tabs
+  controls.innerHTML='';
+  e.tabs.forEach((t,i)=>{const b=document.createElement('button');b.className='tab'+(i===0?' active':'');b.dataset.s=i;b.innerHTML=`<span class="dot"></span>${t}`;b.addEventListener('click',()=>{stop();renderState(i);});controls.appendChild(b);});
+  const p=document.createElement('button');p.className='play';p.id='playBtn';p.innerHTML=`<span id="playIcon">▶</span> <span id="playTxt">Play timeline</span>`;p.addEventListener('click',()=>playing?stop():play());controls.appendChild(p);
+  // DI
+  diCompact.textContent=e.diTrail; diTitle.textContent=e.name; diSub.textContent=e.diSub; diTrail.textContent=e.diTrail;
+  diThumb.style.background=T[id]; diThumb.innerHTML=I[e.icon];
+  curState=-1; renderState(0);
+}
+function renderState(i){
+  if(i===curState)return; curState=i;
+  const e=EXP[curExp], s=e.states[i];
+  laCard.classList.add('swap');
+  setTimeout(()=>{laCard.innerHTML=`<div class="la-head"><div class="la-brand"><span class="hglyph">${I.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">${e.tabs[i]}</span></div>`+s.card(curExp);laCard.classList.remove('swap');},190);
+  islandLab.textContent=s.island; islandTrail.textContent=s.trail; lockTime.textContent=s.clock;
+  const a=s.annot;
+  annot.innerHTML=`<div class="a-eye"><span class="step">${a.step}</span>${a.eye}</div><h3>${a.h}</h3><p>${a.p}</p><div class="a-meta">${a.rows.map(r=>`<div class="a-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>`;
+  document.querySelectorAll('.tab').forEach((t,ti)=>t.classList.toggle('active',ti===i));
+}
+function play(){playing=true;const pi=document.getElementById('playIcon'),pt=document.getElementById('playTxt');if(pi)pi.textContent='❚❚';if(pt)pt.textContent='Pause';timer=setInterval(()=>renderState((curState+1)%EXP[curExp].states.length),3400);}
+function stop(){playing=false;const pi=document.getElementById('playIcon'),pt=document.getElementById('playTxt');if(pi)pi.textContent='▶';if(pt)pt.textContent='Play timeline';if(timer)clearInterval(timer);timer=null;}
+
+selectExp("eye");
+</script>
+</body>
+</html>

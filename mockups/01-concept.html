@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Headout Live Activity — Concept Mockup</title>
+<style>
+  :root{
+    --ho-purple:#8000FF;
+    --ho-purple-deep:#4C00A0;
+    --ho-violet:#9A3DFF;
+    --ho-light:#C9A6FF;
+    --ink:#0A0710;
+    --panel:#120D1E;
+    --glass:rgba(17,12,28,0.60);
+    --glass-2:rgba(28,20,46,0.55);
+    --stroke:rgba(255,255,255,0.12);
+    --stroke-soft:rgba(255,255,255,0.07);
+    --text:#FFFFFF;
+    --dim:rgba(255,255,255,0.64);
+    --dimmer:rgba(255,255,255,0.40);
+    --chip:rgba(255,255,255,0.10);
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font);
+    background:var(--ink);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* ambient glows */
+  .bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+  .bg-glow::before,.bg-glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:0.45;}
+  .bg-glow::before{width:620px;height:620px;background:radial-gradient(circle,#8000FF,transparent 60%);top:-180px;left:-120px;}
+  .bg-glow::after{width:560px;height:560px;background:radial-gradient(circle,#5B00C0,transparent 62%);bottom:-220px;right:-140px;opacity:0.4;}
+
+  .wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:54px 24px 90px;}
+
+  /* ---------- header ---------- */
+  header{margin-bottom:46px;max-width:760px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--ho-light);
+    padding:6px 12px;border:1px solid var(--stroke);border-radius:999px;
+    background:rgba(128,0,255,0.10);
+  }
+  .brandmark{font-weight:800;letter-spacing:-0.02em;}
+  h1{
+    font-size:clamp(30px,4.6vw,50px);
+    line-height:1.04;font-weight:800;letter-spacing:-0.03em;
+    margin:18px 0 14px;
+  }
+  h1 .accent{
+    background:linear-gradient(100deg,var(--ho-violet),#E0B6FF);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lede{font-size:17px;line-height:1.55;color:var(--dim);max-width:620px;}
+
+  /* ---------- section heads ---------- */
+  .sec{margin-top:78px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+  .sec-num{font-size:13px;font-weight:700;color:var(--ho-violet);letter-spacing:0.04em;}
+  .sec h2{font-size:24px;font-weight:700;letter-spacing:-0.02em;margin:0;}
+  .sec p.sub{color:var(--dim);font-size:15px;line-height:1.5;margin:6px 0 30px;max-width:640px;}
+
+  /* ---------- lifecycle controls ---------- */
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:30px;}
+  .tab{
+    appearance:none;border:1px solid var(--stroke);background:rgba(255,255,255,0.04);
+    color:var(--dim);font-family:inherit;font-size:13.5px;font-weight:600;
+    padding:9px 15px;border-radius:999px;cursor:pointer;transition:all .22s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.5;transition:all .22s;}
+  .tab:hover{color:#fff;border-color:rgba(255,255,255,0.22);}
+  .tab.active{background:var(--ho-purple);border-color:var(--ho-purple);color:#fff;box-shadow:0 8px 26px -8px rgba(128,0,255,.7);}
+  .tab.active .dot{opacity:1;background:#fff;}
+  .play{
+    margin-left:auto;appearance:none;border:1px solid var(--stroke);
+    background:rgba(255,255,255,0.04);color:#fff;font-family:inherit;font-weight:600;font-size:13.5px;
+    padding:9px 16px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s;
+  }
+  .play:hover{border-color:rgba(255,255,255,0.26);background:rgba(255,255,255,0.07);}
+
+  /* ---------- stage: phone + annotation ---------- */
+  .stage{display:grid;grid-template-columns:minmax(280px,330px) 1fr;gap:48px;align-items:center;}
+  @media(max-width:760px){.stage{grid-template-columns:1fr;gap:34px;justify-items:center;}}
+
+  /* ---------- iPhone frame ---------- */
+  .phone{
+    position:relative;width:330px;height:690px;border-radius:58px;
+    background:#000;padding:11px;
+    box-shadow:0 0 0 2px #2a2a2e,0 40px 80px -28px rgba(0,0,0,.85),0 0 90px -30px rgba(128,0,255,.5);
+    flex-shrink:0;
+  }
+  .screen{
+    position:relative;width:100%;height:100%;border-radius:48px;overflow:hidden;
+    background:
+      radial-gradient(120% 80% at 50% -10%, #2b1856 0%, transparent 55%),
+      linear-gradient(180deg,#1a0f33 0%,#37205e 38%,#6a3a7a 70%,#c97a5a 100%);
+  }
+  /* faint skyline */
+  .skyline{position:absolute;left:0;right:0;bottom:0;height:120px;opacity:.5;}
+  .screen .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,4,16,.30),rgba(8,4,16,.05) 35%,rgba(8,4,16,.45));}
+
+  /* dynamic island */
+  .island{
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    height:35px;min-width:118px;background:#000;border-radius:22px;z-index:6;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 11px 0 9px;gap:10px;overflow:hidden;
+    transition:all .35s cubic-bezier(.4,1.3,.5,1);
+  }
+  .island .il{display:flex;align-items:center;gap:7px;}
+  .island .hglyph{width:19px;height:19px;border-radius:6px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .island .hglyph svg{width:12px;height:12px;}
+  .island .ilab{font-size:11.5px;font-weight:600;color:#fff;white-space:nowrap;}
+  .island .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+  /* lock screen clock */
+  .lock-top{position:absolute;top:64px;left:0;right:0;text-align:center;z-index:4;padding:0 24px;}
+  .lock-date{font-size:15px;font-weight:600;color:rgba(255,255,255,.92);letter-spacing:.01em;margin-bottom:-4px;}
+  .lock-time{font-size:74px;font-weight:600;letter-spacing:-0.02em;line-height:1;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.25);}
+
+  /* ---------- the Live Activity card ---------- */
+  .la-mount{position:absolute;left:14px;right:14px;top:248px;z-index:5;}
+  .la{
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(22px) saturate(140%);
+    backdrop-filter:blur(22px) saturate(140%);
+    border:1px solid var(--stroke);
+    border-radius:24px;padding:13px 14px 14px;
+    box-shadow:0 18px 40px -18px rgba(0,0,0,.7);
+    transition:opacity .4s ease, transform .4s ease;
+  }
+  .la.swap{opacity:0;transform:translateY(8px);}
+  .la-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
+  .la-brand{display:flex;align-items:center;gap:7px;}
+  .la-brand .hglyph{width:18px;height:18px;border-radius:6px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;}
+  .la-brand .hglyph svg{width:11px;height:11px;}
+  .la-brand .name{font-size:13px;font-weight:800;letter-spacing:-0.01em;}
+  .la-state{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ho-light);}
+
+  .la-body{display:flex;gap:12px;align-items:center;}
+  .thumb{
+    width:54px;height:54px;border-radius:14px;flex-shrink:0;overflow:hidden;
+    background:linear-gradient(140deg,var(--ho-purple),var(--ho-purple-deep));
+    display:flex;align-items:center;justify-content:center;position:relative;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .thumb svg{width:34px;height:34px;color:#fff;opacity:.95;}
+  .la-info{flex:1;min-width:0;}
+  .la-title{font-size:15.5px;font-weight:700;letter-spacing:-0.01em;line-height:1.18;}
+  .la-sub{font-size:12.5px;color:var(--dim);margin-top:2px;line-height:1.3;}
+  .la-trail{text-align:right;flex-shrink:0;padding-left:6px;}
+  .la-trail .big{font-size:19px;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;}
+  .la-trail .lab{font-size:10px;font-weight:600;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;margin-top:1px;}
+
+  /* route / progress for "leave now" */
+  .la-route{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .la-route .line{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.14);position:relative;overflow:hidden;}
+  .la-route .line::after{content:"";position:absolute;left:0;top:0;bottom:0;width:42%;background:linear-gradient(90deg,var(--ho-violet),var(--ho-light));border-radius:4px;}
+  .la-route .pt{width:8px;height:8px;border-radius:50%;background:var(--ho-light);}
+  .la-route .pt.hollow{background:transparent;border:2px solid rgba(255,255,255,.5);}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--chip);border:1px solid var(--stroke-soft);
+    padding:5px 9px;border-radius:9px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.92);
+    white-space:nowrap;
+  }
+  .chip .em{font-size:12.5px;line-height:1;}
+  .chip.cta{background:rgba(128,0,255,.22);border-color:rgba(154,61,255,.5);color:#fff;}
+
+  .la-cta{
+    margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px;
+    background:var(--ho-purple);border-radius:11px;padding:9px;font-size:13px;font-weight:700;
+    box-shadow:0 8px 22px -10px rgba(128,0,255,.9);
+  }
+  .la-cta svg{width:14px;height:14px;}
+
+  .qr{width:40px;height:40px;border-radius:8px;background:#fff;padding:4px;flex-shrink:0;}
+  .qr svg{width:100%;height:100%;}
+  .stars{display:flex;gap:4px;margin-top:4px;}
+  .stars svg{width:18px;height:18px;color:#FFC53D;}
+
+  .lock-bottom{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:space-between;padding:0 40px;z-index:4;}
+  .lb-btn{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.32);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;}
+  .lb-btn svg{width:18px;height:18px;color:#fff;}
+
+  /* ---------- annotation panel ---------- */
+  .annot{max-width:430px;}
+  .annot .a-eye{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ho-violet);margin-bottom:8px;display:flex;align-items:center;gap:9px;}
+  .annot .a-eye .step{width:24px;height:24px;border-radius:50%;background:rgba(128,0,255,.18);border:1px solid rgba(154,61,255,.5);display:flex;align-items:center;justify-content:center;font-size:12px;}
+  .annot h3{font-size:23px;font-weight:700;letter-spacing:-0.02em;margin:0 0 12px;}
+  .annot p{color:var(--dim);font-size:15px;line-height:1.6;margin:0 0 18px;}
+  .a-meta{display:grid;gap:10px;}
+  .a-row{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;line-height:1.45;}
+  .a-row .k{color:var(--ho-light);font-weight:700;min-width:96px;flex-shrink:0;}
+  .a-row .v{color:var(--dim);}
+
+  /* ---------- dynamic island grid ---------- */
+  .di-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:760px){.di-grid{grid-template-columns:1fr;}}
+  .di-card{border:1px solid var(--stroke-soft);border-radius:20px;overflow:hidden;background:var(--panel);}
+  .di-stage{
+    position:relative;height:160px;
+    background:
+      radial-gradient(120% 90% at 50% -20%, #2b1856, transparent 60%),
+      linear-gradient(180deg,#1a0f33,#5a3470);
+    display:flex;justify-content:center;padding-top:18px;
+  }
+  .di-cap{padding:14px 16px 16px;}
+  .di-cap .t{font-size:14px;font-weight:700;}
+  .di-cap .d{font-size:12.5px;color:var(--dim);line-height:1.45;margin-top:4px;}
+
+  /* island variants for grid */
+  .gi{position:relative;background:#000;border-radius:22px;display:flex;align-items:center;height:35px;transition:all .3s;}
+  .gi.minimal{width:46px;justify-content:center;}
+  .gi.minimal .hglyph{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;}
+  .gi.minimal .hglyph svg{width:12px;height:12px;}
+  .gi.compact{min-width:150px;justify-content:space-between;padding:0 12px 0 9px;gap:12px;}
+  .gi.compact .hglyph{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--ho-violet),var(--ho-purple));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .gi.compact .hglyph svg{width:12px;height:12px;}
+  .gi.compact .ir{font-size:12.5px;font-weight:700;color:var(--ho-light);font-variant-numeric:tabular-nums;}
+
+  .gi.expanded{
+    width:248px;height:auto;flex-direction:column;align-items:stretch;border-radius:26px;padding:13px;gap:10px;
+    align-self:flex-start;
+  }
+  .gi.expanded .e-top{display:flex;align-items:center;gap:10px;}
+  .gi.expanded .e-thumb{width:42px;height:42px;border-radius:11px;background:linear-gradient(140deg,var(--ho-purple),var(--ho-purple-deep));display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .gi.expanded .e-thumb svg{width:26px;height:26px;color:#fff;}
+  .gi.expanded .e-info{flex:1;min-width:0;}
+  .gi.expanded .e-title{font-size:13.5px;font-weight:700;line-height:1.15;}
+  .gi.expanded .e-sub{font-size:11.5px;color:var(--dim);margin-top:2px;}
+  .gi.expanded .e-trail{text-align:right;}
+  .gi.expanded .e-trail .b{font-size:16px;font-weight:800;color:var(--ho-light);font-variant-numeric:tabular-nums;}
+  .gi.expanded .e-trail .l{font-size:9px;color:var(--dimmer);text-transform:uppercase;letter-spacing:.08em;}
+  .gi.expanded .e-btn{background:var(--ho-purple);border-radius:10px;padding:8px;text-align:center;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .gi.expanded .e-btn svg{width:13px;height:13px;}
+
+  /* ---------- category variants ---------- */
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media(max-width:880px){.cat-grid{grid-template-columns:1fr;}}
+  .cat-card{border:1px solid var(--stroke-soft);border-radius:22px;padding:20px;background:var(--panel);}
+  .cat-card .cc-tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ho-violet);margin-bottom:14px;}
+  /* reuse .la styling inside a darker plate */
+  .cat-card .la{position:static;background:var(--glass-2);}
+  .cat-card .cc-note{font-size:12.5px;color:var(--dim);line-height:1.5;margin-top:14px;display:flex;gap:8px;}
+  .cat-card .cc-note svg{width:15px;height:15px;color:var(--ho-light);flex-shrink:0;margin-top:1px;}
+
+  /* ---------- footer note ---------- */
+  .note{margin-top:70px;border:1px solid var(--stroke-soft);border-radius:18px;padding:22px 24px;background:rgba(255,255,255,.025);}
+  .note h4{margin:0 0 12px;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+  .note ul{margin:0;padding:0;list-style:none;display:grid;gap:9px;}
+  .note li{font-size:13.5px;color:var(--dim);line-height:1.5;display:flex;gap:10px;}
+  .note li b{color:#fff;font-weight:600;}
+  .note li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ho-violet);margin-top:8px;flex-shrink:0;}
+  .foot{margin-top:34px;font-size:12px;color:var(--dimmer);line-height:1.6;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow"><span class="brandmark">headout</span> · iOS Live Activity</span>
+    <h1>Your booking, <span class="accent">live on the Lock Screen.</span></h1>
+    <p class="lede">A day-of companion for every Headout experience — countdown, when to leave, where to enter, and smart tips tuned to the weather and the activity. Here's how it looks and behaves on a real iPhone.</p>
+  </header>
+
+  <!-- ===================== SECTION 1: LIFECYCLE ===================== -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">01</span><h2>The day, in four moments</h2></div>
+    <p class="sub">The same Live Activity moves through these states automatically. Tap a moment, or press play to watch it run.</p>
+
+    <div class="controls">
+      <button class="tab active" data-state="0"><span class="dot"></span>Getting ready</button>
+      <button class="tab" data-state="1"><span class="dot"></span>Time to leave</button>
+      <button class="tab" data-state="2"><span class="dot"></span>At the venue</button>
+      <button class="tab" data-state="3"><span class="dot"></span>Wrap-up</button>
+      <button class="play" id="playBtn"><span id="playIcon">▶</span> <span id="playTxt">Play timeline</span></button>
+    </div>
+
+    <div class="stage">
+      <!-- PHONE -->
+      <div class="phone">
+        <div class="screen">
+          <svg class="skyline" viewBox="0 0 330 120" preserveAspectRatio="none" aria-hidden="true">
+            <g fill="#1c0f33">
+              <rect x="0" y="78" width="330" height="42"/>
+              <path d="M14 78 q4 -22 8 0 M30 78 q4 -22 8 0 M46 78 q4 -22 8 0 M62 78 q4 -22 8 0 M78 78 q4 -22 8 0 M94 78 q4 -22 8 0 M110 78 q4 -22 8 0 M126 78 q4 -22 8 0 M142 78 q4 -22 8 0 M158 78 q4 -22 8 0 M174 78 q4 -22 8 0 M190 78 q4 -22 8 0 M206 78 q4 -22 8 0 M222 78 q4 -22 8 0 M238 78 q4 -22 8 0 M254 78 q4 -22 8 0 M270 78 q4 -22 8 0 M286 78 q4 -22 8 0 M302 78 q4 -22 8 0 M318 78 q4 -22 8 0" stroke="#1c0f33" stroke-width="12" fill="none"/>
+            </g>
+          </svg>
+          <div class="veil"></div>
+
+          <!-- dynamic island (compact, mirrors current state) -->
+          <div class="island" id="heroIsland">
+            <div class="il">
+              <span class="hglyph">{{HGLYPH}}</span>
+              <span class="ilab" id="islandLab">Colosseum</span>
+            </div>
+            <span class="ir" id="islandTrail">4h 10m</span>
+          </div>
+
+          <div class="lock-top">
+            <div class="lock-date">Saturday, 20 June</div>
+            <div class="lock-time">10:18</div>
+          </div>
+
+          <!-- LIVE ACTIVITY MOUNT -->
+          <div class="la-mount">
+            <div class="la" id="laCard"><!-- injected --></div>
+          </div>
+
+          <div class="lock-bottom">
+            <div class="lb-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <div class="lb-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANNOTATION -->
+      <div class="annot" id="annot"><!-- injected --></div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 2: DYNAMIC ISLAND ===================== -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Living in the Dynamic Island</h2></div>
+    <p class="sub">On iPhone 14 Pro and later it tucks into the Island — a glance when collapsed, the full picture on a long-press.</p>
+
+    <div class="di-grid">
+      <div class="di-card">
+        <div class="di-stage">
+          <div class="gi minimal"><span class="hglyph">{{HGLYPH}}</span></div>
+        </div>
+        <div class="di-cap"><div class="t">Minimal</div><div class="d">When another app shares the Island — just the Headout mark, so they know it's still running.</div></div>
+      </div>
+
+      <div class="di-card">
+        <div class="di-stage">
+          <div class="gi compact">
+            <span class="hglyph">{{HGLYPH}}</span>
+            <span class="ir">4h 10m</span>
+          </div>
+        </div>
+        <div class="di-cap"><div class="t">Compact</div><div class="d">The default glance — Headout on the left, a live countdown to your slot on the right.</div></div>
+      </div>
+
+      <div class="di-card">
+        <div class="di-stage">
+          <div class="gi expanded">
+            <div class="e-top">
+              <div class="e-thumb">{{COLOSSEUM}}</div>
+              <div class="e-info">
+                <div class="e-title">Colosseum Tour</div>
+                <div class="e-sub">Today · 2:30 PM</div>
+              </div>
+              <div class="e-trail"><div class="b">4h 10m</div><div class="l">to go</div></div>
+            </div>
+            <div class="e-btn">{{TICKET}} View ticket</div>
+          </div>
+        </div>
+        <div class="di-cap"><div class="t">Expanded</div><div class="d">Long-press to open it up — experience, countdown, and a one-tap jump to the ticket.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SECTION 3: SCALES ===================== -->
+  <section class="sec">
+    <div class="sec-head"><span class="sec-num">03</span><h2>One pattern, every category</h2></div>
+    <p class="sub">The advice engine reads the experience type, the venue rules, and live weather — so the tips are always the right ones, and never noise.</p>
+
+    <div class="cat-grid">
+      <!-- live entertainment -->
+      <div class="cat-card">
+        <div class="cc-tag">Live entertainment</div>
+        <div class="la">
+          <div class="la-head">
+            <div class="la-brand"><span class="hglyph">{{HGLYPH}}</span><span class="name">headout</span></div>
+            <span class="la-state">Tonight · 8:00 PM</span>
+          </div>
+          <div class="la-body">
+            <div class="thumb">{{STAGE}}</div>
+            <div class="la-info">
+              <div class="la-title">Cirque du Soleil — LUZIA</div>
+              <div class="la-sub">Royal Albert Hall · London</div>
+            </div>
+            <div class="la-trail"><div class="big">7:15</div><div class="lab">Doors</div></div>
+          </div>
+          <div class="chips">
+            <span class="chip"><span class="em">🎭</span>Smart casual</span>
+            <span class="chip"><span class="em">🪑</span>Sec 102 · Row F</span>
+            <span class="chip"><span class="em">☔</span>Rain — you're indoors</span>
+          </div>
+        </div>
+        <div class="cc-note">{{INFO}}<span>Rain is forecast, but the rule checks the indoor flag first — so the tip reassures instead of nagging.</span></div>
+      </div>
+
+      <!-- vatican / dress code -->
+      <div class="cat-card">
+        <div class="cc-tag">Museums & sacred sites</div>
+        <div class="la">
+          <div class="la-head">
+            <div class="la-brand"><span class="hglyph">{{HGLYPH}}</span><span class="name">headout</span></div>
+            <span class="la-state">Today · 9:00 AM</span>
+          </div>
+          <div class="la-body">
+            <div class="thumb">{{MUSEUM}}</div>
+            <div class="la-info">
+              <div class="la-title">Vatican & Sistine Chapel</div>
+              <div class="la-sub">Skip-the-line · Vatican City</div>
+            </div>
+            <div class="la-trail"><div class="big">52m</div><div class="lab">to go</div></div>
+          </div>
+          <div class="chips">
+            <span class="chip"><span class="em">🧥</span>Cover shoulders & knees</span>
+            <span class="chip"><span class="em">🎒</span>Small bags only</span>
+            <span class="chip"><span class="em">👟</span>Lots of walking</span>
+          </div>
+        </div>
+        <div class="cc-note">{{INFO}}<span>A dress-code rule that can stop you at the door — surfaced before you leave, not after.</span></div>
+      </div>
+
+      <!-- food / outdoor -->
+      <div class="cat-card">
+        <div class="cc-tag">Food & open-air tours</div>
+        <div class="la">
+          <div class="la-head">
+            <div class="la-brand"><span class="hglyph">{{HGLYPH}}</span><span class="name">headout</span></div>
+            <span class="la-state">Today · 12:30 PM</span>
+          </div>
+          <div class="la-body">
+            <div class="thumb">{{FOOD}}</div>
+            <div class="la-info">
+              <div class="la-title">Trastevere Food Walk</div>
+              <div class="la-sub">Tastings tour · Rome</div>
+            </div>
+            <div class="la-trail"><div class="big">2h</div><div class="lab">to go</div></div>
+          </div>
+          <div class="chips">
+            <span class="chip"><span class="em">🍝</span>Come hungry</span>
+            <span class="chip"><span class="em">☀️</span>31° — bring water</span>
+            <span class="chip"><span class="em">🧢</span>Hat & shade</span>
+          </div>
+        </div>
+        <div class="cc-note">{{INFO}}<span>Outdoor + midday heat triggers the hydration and shade tips automatically.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== NOTE ===================== -->
+  <div class="note">
+    <h4>How it works under the hood</h4>
+    <ul>
+      <li><b>Push-to-start:</b> the Headout backend launches the activity on the morning of the experience — the user never has to open the app.</li>
+      <li><b>Server-driven updates:</b> a handful of pushes a day move it through the states (ready → leave → arrived → wrap-up). Low frequency, so no battery or rate-limit issues.</li>
+      <li><b>Lifespan:</b> it's a day-of companion — active up to ~8 hours, lingering on the Lock Screen a few hours more. Confirmation and reminders stay in email & push.</li>
+      <li><b>The advice engine:</b> experience metadata you already hold + venue rules + a live weather lookup, blended into at most three tips so the card never clutters.</li>
+    </ul>
+  </div>
+
+  <p class="foot">Concept mockup for internal review · iOS rendering simplified for illustration · Headout purple #8000FF. Brand wordmark and venue imagery are placeholders.</p>
+
+</div>
+
+<!-- SVG defs reused via JS templating -->
+<script>
+/* ---------- icon library ---------- */
+const ICONS = {
+  HGLYPH: `<svg viewBox="0 0 24 24" fill="none"><path d="M6 4v16M18 4v16M6 12h12" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/></svg>`,
+  COLOSSEUM: `<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="30" width="36" height="3.4" rx="1.7" fill="currentColor"/><rect x="6" y="34.6" width="36" height="3.4" rx="1.7" fill="currentColor" opacity=".85"/><g fill="currentColor"><path d="M10 30v-9a3 3 0 0 1 6 0v9z" opacity=".95"/><path d="M19 30v-9a3 3 0 0 1 6 0v9z"/><path d="M28 30v-9a3 3 0 0 1 6 0v9z" opacity=".95"/><rect x="9" y="14" width="30" height="3" rx="1.5"/><path d="M11 14v-3a2.5 2.5 0 0 1 5 0v3zM21.5 14v-3a2.5 2.5 0 0 1 5 0v3zM32 14v-3a2.5 2.5 0 0 1 5 0v3z" opacity=".9"/></g></svg>`,
+  STAGE: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M24 8v6"/><path d="M14 14l-6 8h32l-6-8z" fill="currentColor" fill-opacity=".25"/><circle cx="24" cy="8" r="2.5" fill="currentColor"/><path d="M12 30h24M16 30v8M32 30v8" /></svg>`,
+  MUSEUM: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 18L24 8l16 10z" fill="currentColor" fill-opacity=".25"/><path d="M10 18v16M18 18v16M30 18v16M38 18v16"/><path d="M7 36h34"/></svg>`,
+  FOOD: `<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8v12a4 4 0 0 0 8 0V8M18 8v32"/><path d="M32 8c-3 0-5 3-5 8s2 7 5 7v17"/></svg>`,
+  TICKET: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"/><path d="M13 7v10"/></svg>`,
+  CHEV: `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+  INFO: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>`,
+  STAR: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 20.5l1.4-6.8L2.2 9l6.9-.7z"/></svg>`,
+  QR: `<svg viewBox="0 0 100 100" fill="#120D1E"><rect x="0" y="0" width="28" height="28"/><rect x="8" y="8" width="12" height="12" fill="#fff"/><rect x="72" y="0" width="28" height="28"/><rect x="80" y="8" width="12" height="12" fill="#fff"/><rect x="0" y="72" width="28" height="28"/><rect x="8" y="80" width="12" height="12" fill="#fff"/><rect x="40" y="6" width="8" height="8"/><rect x="52" y="6" width="8" height="8"/><rect x="40" y="40" width="8" height="8"/><rect x="56" y="44" width="8" height="8"/><rect x="68" y="40" width="8" height="8"/><rect x="84" y="40" width="8" height="8"/><rect x="6" y="40" width="8" height="8"/><rect x="20" y="52" width="8" height="8"/><rect x="44" y="68" width="8" height="8"/><rect x="60" y="60" width="8" height="8"/><rect x="72" y="72" width="8" height="8"/><rect x="84" y="84" width="8" height="8"/><rect x="44" y="84" width="8" height="8"/><rect x="60" y="84" width="8" height="8"/></svg>`
+};
+function fillIcons(str){ return str.replace(/\{\{(\w+)\}\}/g, (m,k)=> ICONS[k]||m); }
+/* fill static markup */
+document.body.innerHTML = fillIcons(document.body.innerHTML);
+
+/* ---------- lifecycle states ---------- */
+const STATES = [
+  {
+    island:"Colosseum", trail:"4h 10m",
+    state:"Today · 2:30 PM",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Today · 2:30 PM</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.COLOSSEUM}</div>
+        <div class="la-info"><div class="la-title">Colosseum Underground & Arena</div><div class="la-sub">Guided tour · Rome</div></div>
+        <div class="la-trail"><div class="big">4h 10m</div><div class="lab">to go</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="em">☀️</span>29° sunny</span>
+        <span class="chip"><span class="em">🧴</span>Sunscreen</span>
+        <span class="chip"><span class="em">👟</span>Comfy shoes</span>
+        <span class="chip"><span class="em">💧</span>Bring water</span>
+      </div>`,
+    annot:{ step:1, eye:"Triggered ~4 hrs before", h:"Getting ready", p:"It quietly appears on the morning of the visit with everything to pack into the day — and the tips are already tuned to Rome's weather and the fact that this tour is on its feet for two hours.",
+      rows:[["Trigger","Push-to-start fires automatically on the day"],["Reads","Slot time + outdoor flag + live forecast"],["Says","Dress for sun, walking, hydration"]] }
+  },
+  {
+    island:"Leave now", trail:"1:45",
+    state:"Leave now",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Leave now</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.COLOSSEUM}</div>
+        <div class="la-info"><div class="la-title">Time to head out</div><div class="la-sub">18 min · Metro B to Colosseo</div></div>
+        <div class="la-trail"><div class="big">1:45</div><div class="lab">leave by</div></div>
+      </div>
+      <div class="la-route"><span class="pt"></span><span class="line"></span><span class="pt hollow"></span></div>
+      <div class="la-cta">${ICONS.TICKET} Open your ticket ${ICONS.CHEV}</div>`,
+    annot:{ step:2, eye:"Computed from travel time", h:"Time to leave", p:"The countdown flips to a leave-by time worked back from the route and the slot. This is the single biggest lever on late arrivals and no-shows for timed-entry inventory.",
+      rows:[["Trigger","Slot time minus live travel estimate"],["Reads","Location + transit/route data"],["Says","Leave by 1:45, ticket one tap away"]] }
+  },
+  {
+    island:"Gate B", trail:"2:30",
+    state:"You've arrived",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">You've arrived</span></div>
+      <div class="la-body">
+        <div class="qr">${ICONS.QR}</div>
+        <div class="la-info"><div class="la-title">Entry at Gate B</div><div class="la-sub">Stern entrance · skip the main line</div></div>
+        <div class="la-trail"><div class="big">2:30</div><div class="lab">your slot</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip cta"><span class="em">🎟️</span>Show this QR at the gate</span>
+        <span class="chip"><span class="em">🪪</span>ID may be checked</span>
+      </div>`,
+    annot:{ step:3, eye:"Geofence on arrival", h:"At the venue", p:"Once they're near the site it switches to the practical stuff — which entrance, the QR front-and-centre, and the little details that cut confusion at the door and at support.",
+      rows:[["Trigger","Arrival near venue coordinates"],["Reads","Booking gate + entry rules"],["Says","Gate B, QR ready, ID handy"]] }
+  },
+  {
+    island:"Rate it", trail:"★",
+    state:"Hope you loved it",
+    card:`
+      <div class="la-head"><div class="la-brand"><span class="hglyph">${ICONS.HGLYPH}</span><span class="name">headout</span></div><span class="la-state">Hope you loved it</span></div>
+      <div class="la-body">
+        <div class="thumb">${ICONS.COLOSSEUM}</div>
+        <div class="la-info"><div class="la-title">How was the Colosseum?</div>
+          <div class="stars">${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}${ICONS.STAR}</div></div>
+      </div>
+      <div class="chips">
+        <span class="chip"><span class="em">☕</span>Roman Forum · 5 min</span>
+        <span class="chip cta">Add a nearby experience ${ICONS.CHEV}</span>
+      </div>`,
+    annot:{ step:4, eye:"After the experience ends", h:"Wrap-up", p:"It ends on a warm note — a one-tap rating while the memory's fresh, and a gentle nudge to whatever's worth doing next. The Lock Screen becomes a genuinely premium cross-sell surface.",
+      rows:[["Trigger","Experience end time"],["Reads","Rating prompt + nearby catalogue"],["Says","Rate it, here's what's next"]] }
+  }
+];
+
+const laCard = document.getElementById('laCard');
+const annot = document.getElementById('annot');
+const islandLab = document.getElementById('islandLab');
+const islandTrail = document.getElementById('islandTrail');
+const tabs = [...document.querySelectorAll('.tab')];
+let current = -1, playing = false, timer = null;
+
+function render(i){
+  if(i===current) return;
+  current = i;
+  const s = STATES[i];
+  // card crossfade
+  laCard.classList.add('swap');
+  setTimeout(()=>{
+    laCard.innerHTML = s.card;
+    laCard.classList.remove('swap');
+  },200);
+  // island
+  islandLab.textContent = s.island;
+  islandTrail.textContent = s.trail;
+  // annotation
+  const a = s.annot;
+  annot.innerHTML = `
+    <div class="a-eye"><span class="step">${a.step}</span>${a.eye}</div>
+    <h3>${a.h}</h3>
+    <p>${a.p}</p>
+    <div class="a-meta">
+      ${a.rows.map(r=>`<div class="a-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}
+    </div>`;
+  // tabs
+  tabs.forEach((t,ti)=> t.classList.toggle('active', ti===i));
+}
+
+tabs.forEach((t,i)=> t.addEventListener('click', ()=>{ stop(); render(i); }));
+
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const playTxt = document.getElementById('playTxt');
+function play(){
+  playing = true; playIcon.textContent='❚❚'; playTxt.textContent='Pause';
+  timer = setInterval(()=> render((current+1)%STATES.length), 3400);
+}
+function stop(){
+  playing=false; playIcon.textContent='▶'; playTxt.textContent='Play timeline';
+  if(timer) clearInterval(timer); timer=null;
+}
+playBtn.addEventListener('click', ()=> playing ? stop() : play());
+
+render(0);
+</script>
+</body>
+</html>

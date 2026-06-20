@@ -1,6 +1,8 @@
 # Project Lockstep
 
-> A day-of companion for every Headout booking — live on the iOS Lock Screen, and the launchpad into **Dex**.
+> A day-of companion for every Headout booking — live on the iPhone & Android Lock Screen, for attractions and live shows.
+
+**▶ Live demo:** https://shashanks1911-pixel.github.io/project-lockstep/
 
 **Hackin '26** · Team **OnlyFixes** · Category: 📈 Move the Needle
 
@@ -66,7 +68,7 @@ SUBMISSION.md     Hackin '26 submission text
 ## Push to your GitHub
 
 ```bash
-git remote add origin https://github.com/<you>/<repo>.git
+git remote add origin https://github.com/shashanks1911-pixel/project-lockstep.git
 git branch -M main
 git push -u origin main
 ```

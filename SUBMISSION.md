@@ -4,7 +4,7 @@
 
 **Team members:** Shashank Shekhar, Surya Shikhar
 
-**Github Repo Link:** _[your repo URL]_  <!-- fill in -->
+**Github Repo Link:** https://github.com/shashanks1911-pixel/project-lockstep
 
 **Project name:** Project Lockstep _(working title)_
 
@@ -54,7 +54,7 @@ As a **secondary** boost, the in-venue state can hand the guest straight into **
 Interactive mockup deck, demoed on laptop — **5 experiences across both markets** (Lion King, London Eye, Tower of London, Stonehenge, Colosseum), full day-of lifecycle, all three Dynamic Island states, every tip mapped to real booking-page data (plus an optional **"Start your Dex tour"** handoff on landmarks). iOS shown; Android Live Updates is the parallel surface.
 
 - Demo deck: `index.html` (this repo)
-- Hosted demo / pitch card: _[link]_  <!-- fill in -->
+- Hosted demo / pitch card: https://shashanks1911-pixel.github.io/project-lockstep/
 
 ---
 
